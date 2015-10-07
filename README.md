@@ -1,5 +1,7 @@
 javAPRSlib
 ==========
+This is a fork of javAPRSLib at https://github.com/ab0oo/javAPRSlib
+
 
 javAPRSlib is a Java library to parse and create [APRS](http://www.aprs.org/)
 packets. APRS (Automatic Packet Reporting System) is a digital amateur radio
