@@ -26,6 +26,8 @@
 package net.ab0oo.aprs.parser;
 
 import java.util.ArrayList;
+
+import net.ab0oo.aprs.position.PositionPacket;
 /**
  *
  * @author johng

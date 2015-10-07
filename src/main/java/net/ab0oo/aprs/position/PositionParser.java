@@ -22,9 +22,15 @@
  * http://repo.ham.fi/websvn/java-aprs-fap/
  * I appreciate the base work Matti did - JohnG
  */
-package net.ab0oo.aprs.parser;
+package net.ab0oo.aprs.position;
 
+import java.text.ParseException;
 import java.util.regex.Pattern;
+
+import net.ab0oo.aprs.parser.DataExtension;
+import net.ab0oo.aprs.parser.PHGExtension;
+import net.ab0oo.aprs.parser.RangeExtension;
+
 
 /**
  * This class with decode any of the Position formats specified in the APRS spec, including compressed, uncompressed,
@@ -35,18 +41,42 @@ public class PositionParser {
 
    private static Pattern commaSplit = Pattern.compile(",");
 
-   public static Position parseUncompressed(byte[] msgBody, int cursor) throws Exception {
+   public static Position parseUncompressed(byte[] msgBody, int cursor) throws UnparsablePositionException {
       // System.out.print("UN: ");
 
       if (msgBody[0] == '/' || msgBody[0] == '@') {
          // With a prepended timestamp, jump over it.
          cursor += 7;
       }
+
+      if (msgBody[0] == '!' || msgBody[0] == '=') {
+         // WithOUT a prepended timestamp, jump over it.
+         cursor += 0;
+      }
+
+      // Object report
+      if (msgBody[0] == ';') {
+         // jump to the '*' and skip the time
+         for (int i =0; i < msgBody.length; i++) {
+            if (msgBody[i] == '*') {
+               cursor = i+1;
+               break;
+            }
+         }
+         // Now jump to the time denom
+         for (int i =0; i < msgBody.length; i++) {
+            if (msgBody[i] == 'z' || msgBody[i] == 'h' || msgBody[i] == '/' ) {
+               cursor = i+1;
+               break;
+            }
+         }
+      }
+
       if (msgBody.length < cursor + 19) {
          throw new UnparsablePositionException("Uncompressed packet too short");
       }
 
-      int positionAmbiguity = 0;
+      Ambiguity positionAmbiguity = Ambiguity.NONE;
       // char[] posbuf = fap.body.substring(cursor,cursor+18).toCharArray();
       char[] posbuf = new char[msgBody.length - cursor + 1];
       int pos = 0;
@@ -62,22 +92,22 @@ public class PositionParser {
          posbuf[3] = '0';
          posbuf[5] = '0';
          posbuf[6] = '0';
-         positionAmbiguity = 1;
+         positionAmbiguity = Ambiguity.NEAREST_DEGREE;
       }
       if (posbuf[3] == ' ') {
          posbuf[3] = '5';
          posbuf[5] = '0';
          posbuf[6] = '0';
-         positionAmbiguity = 2;
+         positionAmbiguity = Ambiguity.NEAREST_10_MINUTES;
       }
       if (posbuf[5] == ' ') {
          posbuf[5] = '5';
          posbuf[6] = '0';
-         positionAmbiguity = 3;
+         positionAmbiguity = Ambiguity.NEAREST_MINUTE;
       }
       if (posbuf[6] == ' ') {
          posbuf[6] = '5';
-         positionAmbiguity = 4;
+         positionAmbiguity = Ambiguity.ONE_TENTH_MINUTE;
       }
       // longitude
       if (posbuf[12] == ' ') {
@@ -85,22 +115,22 @@ public class PositionParser {
          posbuf[13] = '0';
          posbuf[15] = '0';
          posbuf[16] = '0';
-         positionAmbiguity = 1;
+         positionAmbiguity = Ambiguity.NEAREST_DEGREE;
       }
       if (posbuf[13] == ' ') {
          posbuf[13] = '5';
          posbuf[15] = '0';
          posbuf[16] = '0';
-         positionAmbiguity = 2;
+         positionAmbiguity = Ambiguity.NEAREST_10_MINUTES;
       }
       if (posbuf[15] == ' ') {
          posbuf[15] = '5';
          posbuf[16] = '0';
-         positionAmbiguity = 3;
+         positionAmbiguity = Ambiguity.NEAREST_MINUTE;
       }
       if (posbuf[16] == ' ') {
          posbuf[16] = '5';
-         positionAmbiguity = 4;
+         positionAmbiguity = Ambiguity.ONE_TENTH_MINUTE;
       }
 
       try {
@@ -111,22 +141,23 @@ public class PositionParser {
          char lngh = posbuf[17];
          char symbolCode = posbuf[18];
 
+
          if (lath == 's' || lath == 'S')
             latitude = 0.0F - latitude;
          else if (lath != 'n' && lath != 'N')
-            throw new Exception("Bad latitude sign character");
+            throw new UnparsablePositionException("Bad latitude sign character");
 
          if (lngh == 'w' || lngh == 'W')
             longitude = 0.0F - longitude;
          else if (lngh != 'e' && lngh != 'E')
-            throw new Exception("Bad longitude sign character");
+            throw new UnparsablePositionException("Bad longitude sign character");
          return new Position(latitude, longitude, positionAmbiguity, symbolTable, symbolCode);
-      } catch (Exception e) {
-         throw new Exception(e);
+      } catch(ParseException e)  {
+         throw new UnparsablePositionException("Could not parse longitude/latitude data", e);
       }
    }
 
-   public static Position parseUncompressed(byte[] msgBody) throws Exception {
+   public static Position parseUncompressed(byte[] msgBody) throws UnparsablePositionException {
       return parseUncompressed(msgBody, 1);
    }
 
@@ -241,28 +272,28 @@ public class PositionParser {
          } else
             destcall2[i] = c;
       }
-      int posAmbiguity = 0;
+      Ambiguity posAmbiguity = Ambiguity.NONE;
       if (destcall2[5] == '_') {
          destcall2[5] = '5';
-         posAmbiguity = 4;
+         posAmbiguity = Ambiguity.ONE_TENTH_MINUTE;
       }
       if (destcall2[4] == '_') {
          destcall2[4] = '5';
-         posAmbiguity = 3;
+         posAmbiguity = Ambiguity.NEAREST_MINUTE;
       }
       if (destcall2[3] == '_') {
          destcall2[3] = '5';
-         posAmbiguity = 2;
+         posAmbiguity = Ambiguity.NEAREST_10_MINUTES;
       }
       if (destcall2[2] == '_') {
          destcall2[2] = '3';
-         posAmbiguity = 1;
+         posAmbiguity = Ambiguity.NEAREST_DEGREE;
       }
       if (destcall2[1] == '_' || destcall2[0] == '_') {
          throw new UnparsablePositionException("bad pos-ambiguity on destcall");
       }
 
-      double lat = 0.0F;
+      double lat = 0.0d;
       try {
          lat = parseDegMin(destcall2, 0, 2, 9, false);
       } catch (Exception e) {
@@ -271,7 +302,7 @@ public class PositionParser {
       // Check north/south direction, and correct the latitude sign if
       // necessary
       if (destinationCall.charAt(3) <= 'L') {
-         lat = 0.0F - lat;
+         lat = 0.0d - lat;
       }
 
       // Now parsing longitude
@@ -287,29 +318,29 @@ public class PositionParser {
          longMin -= 60;
       int longMinFract = (char) msgBody[1 + 2] - 28;
 
-      float lng = 0.0F;
+      double lng = 0.0d;
 
       switch (posAmbiguity) { // degree of positional ambiguity
-      case 0:
-         lng = (longDeg + (longMin) / 60.0F + (longMinFract / 6000.0F));
+      case NONE:
+         lng = (longDeg + (longMin) / 60.0d + (longMinFract / 6000.0d));
          break;
-      case 1:
-         lng = (longDeg + (longMin) / 60.0F + ((longMinFract - longMinFract % 10 + 5) / 6000.0F));
+      case NEAREST_DEGREE: // degree
+         lng = (longDeg + (longMin) / 60.0d + ((longMinFract - longMinFract % 10 + 5) / 6000.0d));
          break;
-      case 2:
-         lng = (longDeg + (longMin) / 60.0F);
+      case NEAREST_10_MINUTES:
+         lng = (longDeg + (longMin) / 60.0d);
          break;
-      case 3:
-         lng = (longDeg + (longMin - longMin % 10 + 5) / 60.0F);
+      case NEAREST_MINUTE:
+         lng = (longDeg + (longMin - longMin % 10 + 5) / 60.0d);
          break;
-      case 4:
-         lng = (longDeg + 0.5F);
+      case ONE_TENTH_MINUTE:
+         lng = (longDeg + 0.5d);
          break;
       default:
          throw new UnparsablePositionException("Unable to extract longitude from MicE");
       }
       if (destcall[1 + 4] >= 'P') { // Longitude east/west sign
-         lng = 0.0F - lng; // east positive, west negative
+         lng = -lng; // east positive, west negative
       }
       return new Position(lat, lng, posAmbiguity, (char) msgBody[1 + 7], (char) msgBody[1 + 6]);
    }
@@ -334,6 +365,16 @@ public class PositionParser {
       return cse;
    }
 
+   /**
+    * Parse the NMEA sentence.  If the fix is described as 'not accurate' rather than GPS/DGPS then this
+    * method sets the ambiguity to 'high' and still records the position, unless it is 0000,0000 which is blatantly
+    * a GPS with no idea of it's position. This means 'last known position' is accepted with a high ambiguity even if it isn't
+    * currently a valid GPS fix.
+    *
+    * @param msgBody
+    * @return
+    * @throws UnparsablePositionException
+    */
    public static Position parseNMEA(byte[] msgBody) throws UnparsablePositionException {
 
       // Runtime exception if method fails parameter
@@ -341,6 +382,7 @@ public class PositionParser {
          throw new IllegalArgumentException();
 
       String[] nmea = commaSplit.split(new String(msgBody));
+      Ambiguity ambiguity = Ambiguity.NONE;
       String lats = null; // Strings of Lat/Lon
       String lngs = null;
       String lath = null; // Polarity of Lat/Lon
@@ -372,14 +414,29 @@ public class PositionParser {
          // $GPGGA,hhmmss.dd,xxmm.dddd,<N|S>,yyymm.dddd,<E|W>,v,
          // ss,d.d,h.h,M,g.g,M,a.a,xxxx*hh<CR><LF>
 
-         if (!("1".equals(nmea[6]))) { // Not valid position fix
-            throw new UnparsablePositionException("Not a valid position fix");
-         }
-
          lats = nmea[2];
          lath = nmea[3];
          lngs = nmea[4];
          lngh = nmea[5];
+
+         // If not GPS or DGPS fix, then we treat as invalid.
+         if (!("0".equals(nmea[6])) && !("1".equals(nmea[6])) && !("2".equals(nmea[6]))) { // Not valid position fix
+            throw new UnparsablePositionException("Not a valid position fix");
+         }
+
+         // if no valid fix, but contains GPS data, then we treat as low-accuracy fix if the lat/lon isn't 0.
+         if ("0".equals(nmea[6])) {
+            try {
+               double lat = parseDegMin(lats.toCharArray(), 0, 2, 9, true);
+               double lng = parseDegMin(lngs.toCharArray(), 0, 3, 9, true);
+               if (lat == 0 && lng == 0) {
+                  throw new UnparsablePositionException("Not an accurate position fix");
+               }
+               ambiguity = Ambiguity.NEAREST_DEGREE; // Lowest accuracy
+            } catch(ParseException e) {
+               throw new UnparsablePositionException("Not a valid position fix");
+            }
+         }
 
       } else if ("$GPGLL".equals(nmea[0]) && nmea.length > 6) {
          // $GPGLL,xxmm.dddd,<N|S>,yyymm.dddd,<E|W>,hhmmss.dd,S,M*hh<CR><LF>
@@ -407,14 +464,26 @@ public class PositionParser {
          // GPRMC,003803,A,3347.1727,N,11812.7184,W,000.0,000.0,140208,013.7,E*67
          // GPRMC,050058,A,4609.1143,N,12258.8184,W,0.000,0.0,100208,18.0,E*5B
 
-         if (!nmea[2].equals("A")) {
-            throw new UnparsablePositionException("Not valid or not autonomous NMEA sentence");
-         }
-
          lats = nmea[3];
          lath = nmea[4];
          lngs = nmea[5];
          lngh = nmea[6];
+
+         // Try to parse everything as it could be last position, or 'good enough', but if lat/lon is 00000 then fail.
+         if (!nmea[2].equals("A")) {
+            try {
+               double lat = parseDegMin(lats.toCharArray(), 0, 2, 9, true);
+               double lng = parseDegMin(lngs.toCharArray(), 0, 3, 9, true);
+               if (lat == 0 && lng == 0) {
+                  throw new UnparsablePositionException("Not an accurate position fix");
+               }
+               ambiguity = Ambiguity.NEAREST_DEGREE; // Lowest accuracy
+            } catch(ParseException e) {
+               throw new UnparsablePositionException("Not a valid position fix");
+            }
+         }
+
+
 
       } else if ("$GPWPL".equals(nmea[0]) && nmea.length > 5) {
          // $GPWPL,4610.586,N,00607.754,E,4*70
@@ -483,26 +552,28 @@ public class PositionParser {
       try {
          double lat = parseDegMin(lats.toCharArray(), 0, 2, 9, true);
          double lng = parseDegMin(lngs.toCharArray(), 0, 3, 9, true);
-         if (lat > 90.0F)
+         if (lat > 90.0d)
             throw new UnparsablePositionException("Latitude too high");
-         if (lng > 180.0F)
+         if (lng > 180.0d)
             throw new UnparsablePositionException("Longitude too high");
 
          if (lath.equals("S") || lath.equals("s"))
-            lat = 0.0F - lat; // South negative
+            lat = 0.0d - lat; // South negative
          else if (!(lath.equals("N") || lath.equals("n")))
             throw new UnparsablePositionException("Bad latitude sign");
 
          if (lngh.equals("W") || lngh.equals("w"))
-            lng = 0.0F - lng; // West negative
+            lng = 0.0d - lng; // West negative
          else if (!(lngh.equals("E") || lngh.equals("e")))
             throw new UnparsablePositionException("Bad longitude sign");
 
-         return new Position(lat, lng, 0, '/', '>'); // FIXME: GPS symbols
+         return new Position(lat, lng, ambiguity, '/', '>'); // FIXME: GPS symbols
          // fillPos(fap, lat, lng, '/', '>', 0);
 
-      } catch (Exception e) {
-         throw new UnparsablePositionException("Abject failure parsing NMEA sentence");
+      } catch (UnparsablePositionException e) {
+         throw e; // simply rethrow
+      } catch (Throwable e) {
+         throw new UnparsablePositionException("Failure parsing NMEA sentence", e);
       }
    }
 
@@ -532,9 +603,9 @@ public class PositionParser {
       int lng3 = (char) msgBody[cursor + 7] - 33;
       int lng4 = (char) msgBody[cursor + 8] - 33;
 
-      float lat = 90.0F - ((lat1 * 91 * 91 * 91 + lat2 * 91 * 91 + lat3 * 91 + lat4) / 380926.0F);
-      float lng = -180.0F + ((lng1 * 91 * 91 * 91 + lng2 * 91 * 91 + lng3 * 91 + lng4) / 190463.0F);
-      return new Position(lat, lng, 0, (char) msgBody[cursor + 0], (char) msgBody[cursor + 9]);
+      double lat = 90.0d - ((lat1 * 91 * 91 * 91 + lat2 * 91 * 91 + lat3 * 91 + lat4) / 380926.0d);
+      double lng = -180.0d + ((lng1 * 91 * 91 * 91 + lng2 * 91 * 91 + lng3 * 91 + lng4) / 190463.0d);
+      return new Position(lat, lng, Ambiguity.NONE, (char) msgBody[cursor + 0], (char) msgBody[cursor + 9]);
    }
 
    public static DataExtension parseCompressedExtension(byte[] msgBody, int cursor) throws Exception {
@@ -571,20 +642,20 @@ public class PositionParser {
    }
 
    private static double parseDegMin(char[] txt, int cursor, int degSize, int len, boolean decimalDot)
-         throws Exception {
+         throws ParseException {
       //System.out.println("DegMin data is "+new String(txt));
       if (txt == null || txt.length < cursor + degSize + 2)
-         throw new Exception("Too short degmin data");
-      double result = 0.0F;
+         throw new ParseException("Too short degmin data", txt.length);
+      double result = 0.0d;
       for (int i = 0; i < degSize; ++i) {
          char c = txt[cursor + i];
          if (c < '0' || c > '9')
-            throw new Exception("Bad input decimals:  " + c);
-         result = result * 10.0F + (c - '0');
+            throw new ParseException("Bad input decimals:  " + c, i);
+         result = result * 10.0d + (c - '0');
       }
-      double minFactor = 10.0F; // minutes factor, divide by 10.0F for every
+      double minFactor = 10.0d; // minutes factor, divide by 10.0d for every
       // minute digit
-      double minutes = 0.0F;
+      double minutes = 0.0d;
       int mLen = txt.length - degSize - cursor;
       if (mLen > len - degSize)
          mLen = len - degSize;
@@ -593,22 +664,22 @@ public class PositionParser {
          if (decimalDot && i == 2) {
             if (c == '.')
                continue; // Skip it! (but only at this position)
-            throw new Exception("Expected decimal dot");
+            throw new ParseException("Expected decimal dot", i);
          }
          if (c < '0' || c > '9')
-            throw new Exception("Bad input decimals: " + c);
+            throw new ParseException("Bad input decimals: " + c, i);
          minutes += minFactor * (c - '0');
-         minFactor *= 0.1D;
+         minFactor *= 0.1d;
       }
-      if (minutes >= 60.0D)
-         throw new Exception("Bad minutes value - 60.0 or over");
+      if (minutes >= 60.0d)
+         throw new ParseException("Bad minutes value - 60.0 or over",0);
       // return result
-      result += minutes / 60.0D;
-      result = Math.round(result * 100000.0) * 0.00001D;
-      if (degSize == 2 && result > 90.01D)
-         throw new Exception("Latitude value too high");
-      if (degSize == 3 && result > 180.01F)
-         throw new Exception("Longitude value too high");
+      result += minutes / 60.0d;
+      result = Math.round(result * 100000.0) * 0.00001d;
+      if (degSize == 2 && result > 90.01d)
+         throw new ParseException("Latitude value too high",0);
+      if (degSize == 3 && result > 180.01d)
+         throw new ParseException("Longitude value too high",0);
       return result;
    }
 

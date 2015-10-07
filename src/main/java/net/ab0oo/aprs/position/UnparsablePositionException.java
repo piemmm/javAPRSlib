@@ -21,7 +21,7 @@
 /**
  * Simple exception class used to indicate a Parser failure
  */
-package net.ab0oo.aprs.parser;
+package net.ab0oo.aprs.position;
 
 /**
  * @author johng
@@ -34,4 +34,10 @@ public class UnparsablePositionException extends Exception {
    public UnparsablePositionException(String ex) {
       super(ex);
    }
+
+   public UnparsablePositionException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+
 }

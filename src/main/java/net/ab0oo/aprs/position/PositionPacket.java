@@ -21,8 +21,10 @@
  *  Please note that significant portions of this code were taken from the JAVA FAP
  *  conversion by Matti Aarnio at http://repo.ham.fi/websvn/java-aprs-fap/
  */
-package net.ab0oo.aprs.parser;
+package net.ab0oo.aprs.position;
 
+import net.ab0oo.aprs.parser.APRSTypes;
+import net.ab0oo.aprs.parser.InformationField;
 
 public class PositionPacket extends InformationField implements java.io.Serializable {
    private static final long serialVersionUID = 1L;

@@ -18,9 +18,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-package net.ab0oo.aprs.parser;
+package net.ab0oo.aprs.position;
 
 import java.io.Serializable;
+
+import net.ab0oo.aprs.parser.DataExtension;
+import net.ab0oo.aprs.utils.Utilities;
 
 /**
  *

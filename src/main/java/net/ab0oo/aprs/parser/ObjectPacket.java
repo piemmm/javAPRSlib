@@ -2,6 +2,9 @@ package net.ab0oo.aprs.parser;
 
 import java.io.Serializable;
 
+import net.ab0oo.aprs.position.Position;
+import net.ab0oo.aprs.position.PositionParser;
+
 public class ObjectPacket extends InformationField implements Serializable {
    private static final long serialVersionUID = 1L;
    protected String objectName;

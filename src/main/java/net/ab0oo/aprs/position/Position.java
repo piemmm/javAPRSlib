@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-package net.ab0oo.aprs.parser;
+package net.ab0oo.aprs.position;
 
 import java.util.Date;
 /**
@@ -32,7 +32,7 @@ public class Position implements java.io.Serializable {
    private static final long serialVersionUID = 1L;
    private Double latitude = 0d, longitude = 0d;
    private Integer altitude = -1;
-   private Integer positionAmbiguity;
+   private Ambiguity positionAmbiguity;
    private Date timestamp;
    private char symbolTable, symbolCode;
 
@@ -40,7 +40,7 @@ public class Position implements java.io.Serializable {
       timestamp = new Date();
    }
 
-   public Position(double lat, double lon, int posAmb, char st, char sc) {
+   public Position(double lat, double lon, Ambiguity posAmb, char st, char sc) {
       this.latitude = Math.round(lat * 100000) * 0.00001D;
       this.longitude = Math.round(lon * 100000) * 0.00001D;
       this.positionAmbiguity = posAmb;
@@ -52,7 +52,7 @@ public class Position implements java.io.Serializable {
    public Position(double lat, double lon) {
       this.latitude = Math.round(lat * 100000) * 0.00001D;
       this.longitude = Math.round(lon * 100000) * 0.00001D;
-      this.positionAmbiguity=0;
+      this.positionAmbiguity=Ambiguity.NONE;
       this.symbolTable = '\\';
       this.symbolCode = '.';
       this.timestamp = new Date();
@@ -103,14 +103,14 @@ public class Position implements java.io.Serializable {
    /**
     * @return the positionAmbiguity
     */
-   public int getPositionAmbiguity() {
+   public Ambiguity getPositionAmbiguity() {
       return positionAmbiguity;
    }
 
    /**
     * @param positionAmbiguity the positionAmbiguity to set
     */
-   public void setPositionAmbiguity(int positionAmbiguity) {
+   public void setPositionAmbiguity(Ambiguity positionAmbiguity) {
       this.positionAmbiguity = positionAmbiguity;
    }
 
@@ -167,13 +167,13 @@ public class Position implements java.io.Serializable {
       String ambiguousFrac;
 
       switch (positionAmbiguity) {
-      case 1: // "dd  .  N"
+      case NEAREST_DEGREE: // "dd  .  N"
          ambiguousFrac = "  .  "; break;
-      case 2: // "ddm .  N"
+      case NEAREST_10_MINUTES: // "ddm .  N"
          ambiguousFrac = String.format("%d .  ", min/10); break;
-      case 3: // "ddmm.  N"
+      case NEAREST_MINUTE: // "ddmm.  N"
          ambiguousFrac = String.format("%02d.  ", min); break;
-      case 4: // "ddmm.f N"
+      case ONE_TENTH_MINUTE: // "ddmm.f N"
          ambiguousFrac = String.format("%02d.%d ", min, minFrac/10); break;
       default: // "ddmm.ffN"
          ambiguousFrac = String.format("%02d.%02d", min, minFrac); break;

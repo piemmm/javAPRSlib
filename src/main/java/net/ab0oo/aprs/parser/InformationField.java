@@ -38,7 +38,7 @@ public abstract class InformationField implements Serializable {
    protected APRSTypes type;
    protected boolean hasFault = false;
    protected boolean canMessage = false;
-   DataExtension extension = null;
+   protected DataExtension extension = null;
    protected String comment = "";
 
    public InformationField() {
@@ -56,6 +56,12 @@ public abstract class InformationField implements Serializable {
       case '\'':
       case ':' : this.canMessage = true;
       }
+   }
+
+
+
+   public void setExtension(DataExtension extension) {
+      this.extension = extension;
    }
 
    public char getDateTypeIdentifier() {
