@@ -21,13 +21,13 @@
 package net.ab0oo.aprs.parser;
 
 public class UnsupportedInfoField extends InformationField {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public UnsupportedInfoField() {
-		super();
-	}
+   public UnsupportedInfoField() {
+      super();
+   }
 
-	public UnsupportedInfoField(byte[] rawBytes) {
-		super(rawBytes);
-	}
+   public UnsupportedInfoField(byte[] rawBytes) {
+      super(rawBytes);
+   }
 }

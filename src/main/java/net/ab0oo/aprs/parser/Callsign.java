@@ -23,88 +23,88 @@ package net.ab0oo.aprs.parser;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * @author do1gl
  * This class represents a callsign with (optional) ssid
  */
 public class Callsign implements Serializable {
-	private static final long serialVersionUID = 1L;
-	protected String callsign;
-	protected String ssid;
+   private static final long serialVersionUID = 1L;
+   protected String callsign;
+   protected String ssid;
 
-	public Callsign(String call) {
-		String[] callssid = call.split("-");
-		this.callsign = callssid[0];
-		if (callssid.length > 1) {
-			this.ssid = callssid[1];
-		} else {
-			this.ssid="";
-		}
-	}
+   public Callsign(String call) {
+      String[] callssid = call.split("-");
+      this.callsign = callssid[0];
+      if (callssid.length > 1) {
+         this.ssid = callssid[1];
+      } else {
+         this.ssid="";
+      }
+   }
 
-	public Callsign(byte[] data, int offset) {
-		byte[] shifted = new byte[6];
-		byte ssidbyte = data[offset + 6];
-		for (int i = 0; i < 6; i++)
-			shifted[i] = (byte)((data[offset + i]&0xff) >> 1);
-		this.callsign = new String(shifted, 0, 6).trim();
-		int ssidval = (ssidbyte & 0x1e) >> 1;
-		if (ssidval != 0)
-			this.ssid = "" + ssidval;
-		else this.ssid = "";
-	}
+   public Callsign(byte[] data, int offset) {
+      byte[] shifted = new byte[6];
+      byte ssidbyte = data[offset + 6];
+      for (int i = 0; i < 6; i++)
+         shifted[i] = (byte)((data[offset + i]&0xff) >> 1);
+      this.callsign = new String(shifted, 0, 6).trim();
+      int ssidval = (ssidbyte & 0x1e) >> 1;
+      if (ssidval != 0)
+         this.ssid = "" + ssidval;
+      else this.ssid = "";
+   }
 
-    /**
-     * @return the callsign
-     */
-    public String getCallsign() {
-        return callsign;
-    }
+   /**
+    * @return the callsign
+    */
+   public String getCallsign() {
+      return callsign;
+   }
 
-    /**
-     * @param callsign the callsign to set
-     */
-    public void setCallsign(String callsign) {
-        this.callsign = callsign;
-    }
+   /**
+    * @param callsign the callsign to set
+    */
+   public void setCallsign(String callsign) {
+      this.callsign = callsign;
+   }
 
-    /**
-     * @return the ssid
-     */
-    public String getSsid() {
-        return ssid;
-    }
+   /**
+    * @return the ssid
+    */
+   public String getSsid() {
+      return ssid;
+   }
 
-    /**
-     * @param ssid the ssid to set
-     */
-    public void setSsid(String ssid) {
-        this.ssid = ssid;
-    }
+   /**
+    * @param ssid the ssid to set
+    */
+   public void setSsid(String ssid) {
+      this.ssid = ssid;
+   }
 
-    @Override
-    public String toString() {
-        return callsign + (ssid == "" ? "" : "-" + ssid);
-    }
+   @Override
+   public String toString() {
+      return callsign + ("".equals(ssid) ? "" : "-" + ssid);
+   }
 
-    public byte[] toAX25() throws IllegalArgumentException {
-        byte[] callbytes = callsign.getBytes();
-        byte[] ax25 = new byte[7];
-	// shift " " by one
-	java.util.Arrays.fill(ax25, (byte)0x40);
-	if (callbytes.length > 6)
-		throw new IllegalArgumentException("Callsign " + callsign + " is too long for AX.25!");
-        for (int i = 0; i < callbytes.length; i++) {
-		ax25[i] = (byte)(callbytes[i] << 1);
-	}
-	int ssidval = 0;
-	try {
-		ssidval = Integer.parseInt(ssid);
-	} catch (NumberFormatException e) {
-		// we ignore that for now.
-	}
-	// ssid byte: u11ssss0
-	ax25[6] = (byte) (0x60 | ((ssidval*2) & 0x1e));
-	return ax25;
-    }
+   public byte[] toAX25() throws IllegalArgumentException {
+      byte[] callbytes = callsign.getBytes();
+      byte[] ax25 = new byte[7];
+      // shift " " by one
+      java.util.Arrays.fill(ax25, (byte)0x40);
+      if (callbytes.length > 6)
+         throw new IllegalArgumentException("Callsign " + callsign + " is too long for AX.25!");
+      for (int i = 0; i < callbytes.length; i++) {
+         ax25[i] = (byte)(callbytes[i] << 1);
+      }
+      int ssidval = 0;
+      try {
+         ssidval = Integer.parseInt(ssid);
+      } catch (NumberFormatException e) {
+         // we ignore that for now.
+      }
+      // ssid byte: u11ssss0
+      ax25[6] = (byte) (0x60 | ((ssidval*2) & 0x1e));
+      return ax25;
+   }
 }

@@ -19,7 +19,7 @@
  * USA
  */
 /**
- * Simple exception class used to indicate a Parser failure 
+ * Simple exception class used to indicate a Parser failure
  */
 package net.ab0oo.aprs.parser;
 
@@ -29,9 +29,9 @@ package net.ab0oo.aprs.parser;
  */
 public class UnparsablePositionException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	public UnparsablePositionException(String ex) {
-		super(ex);
-	}
+   public UnparsablePositionException(String ex) {
+      super(ex);
+   }
 }

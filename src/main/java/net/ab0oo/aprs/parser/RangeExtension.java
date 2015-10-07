@@ -27,30 +27,30 @@ import java.io.Serializable;
  *
  */
 public class RangeExtension extends DataExtension implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private int range;
-	
-	public RangeExtension( int range ) {
-		this.setRange(range);
-	}
+   private static final long serialVersionUID = 1L;
+   private int range;
 
-	/**
-	 * @param range the range to set
-	 */
-	public void setRange(int range) {
-		this.range = range;
-	}
+   public RangeExtension( int range ) {
+      this.setRange(range);
+   }
 
-	/**
-	 * @return the range
-	 */
-	public int getRange() {
-		return range;
-	}
-	
-	@Override
-	public String toSAEString() {
-		return "Range of "+range+" miles";
-	}
+   /**
+    * @param range the range to set
+    */
+   public void setRange(int range) {
+      this.range = range;
+   }
+
+   /**
+    * @return the range
+    */
+   public int getRange() {
+      return range;
+   }
+
+   @Override
+   public String toSAEString() {
+      return "Range of "+range+" miles";
+   }
 
 }

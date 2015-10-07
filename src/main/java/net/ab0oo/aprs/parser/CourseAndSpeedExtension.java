@@ -23,52 +23,52 @@ package net.ab0oo.aprs.parser;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * @author johng
- * 
+ *
  */
 public class CourseAndSpeedExtension extends DataExtension implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private int course;
-	private int speed;
-	/**
-	 * @return the course in degrees true
-	 */
-	public int getCourse() {
-		return course;
-	}
-	/**
-	 * @param course the course to set in degrees true
-	 */
-	public void setCourse(int course) {
-		this.course = course;
-	}
-	/**
-	 * @return the speed in knots
-	 */
-	public int getSpeed() {
-		return speed;
-	}
-	/**
-	 * @param speed the speed to set in knots
-	 */
-	public void setSpeed(int speed) {
-		this.speed = speed;
-	}
-	
-	/**
-	 * @param Returns the current speed in knots and course in degrees in a formatted string
-	 */
-	@Override
-	public String toString() {
-		return "Moving "+speed+" kts @ "+course+" deg";
-	}
-	
-	/**
-	 * @param Returns the current speed in mph and course in degrees in a formatted string
-	 */
-	@Override
-	public String toSAEString() {
-		return "Moving "+Utilities.ktsToMph(speed)+" mph @ "+course+" deg";
-	}
+   private static final long serialVersionUID = 1L;
+   private int course;
+   private int speed;
+   /**
+    * @return the course in degrees true
+    */
+   public int getCourse() {
+      return course;
+   }
+   /**
+    * @param course the course to set in degrees true
+    */
+   public void setCourse(int course) {
+      this.course = course;
+   }
+   /**
+    * @return the speed in knots
+    */
+   public int getSpeed() {
+      return speed;
+   }
+   /**
+    * @param speed the speed to set in knots
+    */
+   public void setSpeed(int speed) {
+      this.speed = speed;
+   }
+
+   /**
+    * @param Returns the current speed in knots and course in degrees in a formatted string
+    */
+   @Override
+   public String toString() {
+      return "Moving "+speed+" kts @ "+course+" deg";
+   }
+
+   /**
+    * @param Returns the current speed in mph and course in degrees in a formatted string
+    */
+   @Override
+   public String toSAEString() {
+      return "Moving "+Utilities.ktsToMph(speed)+" mph @ "+course+" deg";
+   }
 }

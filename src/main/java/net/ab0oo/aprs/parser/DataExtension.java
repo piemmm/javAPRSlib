@@ -20,7 +20,7 @@
  */
 package net.ab0oo.aprs.parser;
 /**
- * 
+ *
  * @author johng
  * Abstract class that encapsulates the possible Data Extensions to APRS packets.  These include
  * Course and Speed
@@ -33,5 +33,5 @@ package net.ab0oo.aprs.parser;
  * Wind Direction and Speed
  */
 public abstract class DataExtension {
-	public abstract String toSAEString();
+   public abstract String toSAEString();
 }
