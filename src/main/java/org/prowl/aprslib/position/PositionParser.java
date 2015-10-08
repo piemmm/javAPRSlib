@@ -63,7 +63,7 @@ public class PositionParser {
             }
          }
          // Now jump to the time denom
-         for (int i = 0; i < msgBody.length; i++) {
+         for (int i = cursor; i < msgBody.length; i++) {
             if (msgBody[i] == 'Z' || msgBody[i] == 'H' || msgBody[i] == 'z' || msgBody[i] == 'h' || msgBody[i] == '/') {
                cursor = i + 1;
                break;

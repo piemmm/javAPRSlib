@@ -56,6 +56,7 @@ public class PositionParserTest {
    public void testParseUncompressedPacket() throws Exception {
       // Uncompressed test packets as seen on ARPS-IS
       String[] testCases = new String[] {
+            ";LZ0DAC B *081940z4228.42ND02540.01EaRNG0050 440 Voice 438.45000MHz -7.6000MHz",
             ";146.80XY*111111z4359.00N/12049.76WrT173 R60 linked to Drake pk and Grizzly",
             ";DK0RE   *072012z5148.25N/00811.53EKN47 am Silo",
             ";*111111z4338.31N/12319.64W R50m DRAIN",
