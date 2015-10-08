@@ -662,7 +662,7 @@ public class PositionParser {
 
    private static double parseDegMin(char[] txt, int cursor, int degSize, int len, boolean decimalDot)
          throws ParseException {
-      System.out.println("DegMin data is " + new String(txt));
+      // System.out.println("DegMin data is " + new String(txt));
       if (txt == null || txt.length < cursor + degSize + 2)
          throw new ParseException("Too short degmin data", txt.length);
       double result = 0.0d;
