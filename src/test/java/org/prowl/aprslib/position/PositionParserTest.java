@@ -58,6 +58,8 @@ public class PositionParserTest {
    public void testParseUncompressedPacket() throws Exception {
       // Uncompressed test packets as seen on ARPS-IS
       String[] testCases = new String[] {
+            ";145.687.5_111111z4633.53N/00023.19Er",
+            ";SOMERSET CO RACES UHF SYSTEM*111111z4013.93N/07906.15Wr444.475-R 443.150-R PLs 123HZ",
             ";Windmill *111111z5121.33N\\900108.22EL Built in 1789, Grade 1 Listed - Open Sunday's Easter to Sept.", // alernate symbols
             ";LZ0DAC B *081940z4228.42ND02540.01EaRNG0050 440 Voice 438.45000MHz -7.6000MHz",
             ";146.80XY*111111z4359.00N/12049.76WrT173 R60 linked to Drake pk and Grizzly",

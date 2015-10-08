@@ -57,7 +57,7 @@ public class PositionParser {
       if (msgBody[0] == ';') {
          // jump to the '*' and skip the time
          for (int i = 0; i < msgBody.length; i++) {
-            if (msgBody[i] == '*') {
+            if (msgBody[i] == '*' || msgBody[i] == '_') {
                cursor = i + 1;
                break;
             }
