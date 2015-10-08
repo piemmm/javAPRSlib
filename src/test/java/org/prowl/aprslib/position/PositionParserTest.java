@@ -19,7 +19,9 @@ public class PositionParserTest {
             "$GPGLL,4609.105,N,12258.824,W,122358,A*3A",
             "$GPGGA,000045.996,0340.0000,N,02345.0000,E,0,00,50.0,0.0,M,,,,0000*3C", // Invalid fix - no of sats also 0
             "$GPGGA,201114.000,4455.5520,N,09323.0659,W,2,09,0.9,286.3,M,-31.7,M,3.8,0000*4B", // Valid DGPS type fix
-            "$GPGGA,201120.000,4531.7420,N,12225.7631,W,2,10,0.9,60.5,M,-19.2,M,3.8,0000*73" // Valid DGPS again
+            "$GPGGA,201120.000,4531.7420,N,12225.7631,W,2,10,0.9,60.5,M,-19.2,M,3.8,0000*73", // Valid DGPS again
+            "$GPGGA,194733,3601.0626,N,09547.8473,W,,,,,M,,M,,*75" // GPS data sparse - no lock or sat data provided but still usable
+
       };
 
       // Check that our list of NMEA test cases can be parsed ok
@@ -38,7 +40,7 @@ public class PositionParserTest {
    public void testInaccurateNMEASentence() throws Exception {
       // NMEA test packets as seen on ARPS-IS
       String[] testCases = new String[] {
-            "$GPGGA,000045.996,0000.0000,N,00000.0000,E,0,00,50.0,0.0,M,,,,0000*3C" // Invalid fix - no of sats also 0
+            "$GPGGA,000045.996,0000.0000,N,00000.0000,E,0,00,50.0,0.0,M,,,,0000*3C", // Invalid fix - no of sats also 0
       };
 
       // Check that our list of NMEA test cases can be parsed ok

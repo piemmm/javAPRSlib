@@ -433,12 +433,12 @@ public class PositionParser {
          lngh = nmea[5];
 
          // If not GPS or DGPS fix, then we treat as invalid.
-         if (!("0".equals(nmea[6])) && !("1".equals(nmea[6])) && !("2".equals(nmea[6]))) { // Not valid position fix
+         if (!("0".equals(nmea[6])) && !("1".equals(nmea[6])) && !("2".equals(nmea[6])) && !nmea[6].isEmpty()) { // Not valid position fix
             throw new UnparsablePositionException("Not a valid position fix");
          }
 
          // if no valid fix, but contains GPS data, then we treat as low-accuracy fix if the lat/lon isn't 0.
-         if ("0".equals(nmea[6])) {
+         if ("0".equals(nmea[6]) || nmea[6].isEmpty()) {
             try {
                double lat = parseDegMin(lats.toCharArray(), 0, 2, 9, true);
                double lng = parseDegMin(lngs.toCharArray(), 0, 3, 9, true);
