@@ -78,11 +78,10 @@ public class PositionParser {
       }
 
       Ambiguity positionAmbiguity = Ambiguity.NONE;
-      // char[] posbuf = fap.body.substring(cursor,cursor+18).toCharArray();
       int packetLength = 19;
-      if ((char) msgBody[cursor + 13] == '.') {
-         packetLength = 18;
-      }
+      if (msgBody.length - cursor < 19)
+         packetLength = msgBody.length - cursor;
+
       char[] posbuf = new char[msgBody.length - cursor + 1];
       int pos = 0;
       for (int i = cursor; i < cursor + packetLength; i++) {
@@ -99,7 +98,7 @@ public class PositionParser {
          posbuf = newPosbuf;
       }
 
-      // Longer longitude - repair by adding missing '0'.
+      // Longer longitude - repair by removing extra '0'. (likely from alternate symbols used/overlays)
       if (posbuf[15] == '.') {
          char[] newPosbuf = new char[posbuf.length - 1];
          System.arraycopy(posbuf, 0, newPosbuf, 0, 9);

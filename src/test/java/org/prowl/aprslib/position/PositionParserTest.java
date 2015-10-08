@@ -79,6 +79,7 @@ public class PositionParserTest {
    public void testParseUncompressedCorruptRecoverablePacket() throws Exception {
       // Uncompressed test packets as seen on ARPS-IS
       String[] testCases = new String[] {
+            "!4126.95N/09629.10W", // missing symbol.
             // "!4553.97NPZ01556.88E#/W3, APRS 9A2CD Conjo Zagreb 1", // winaprs 'PZ' - needs investigation
             // "!3237.30N/11525.44@\"#W# Mexicali, Baja * XE2DAK-2 / UHF", // investigate this too - longitude sign is @ for some reason
             "!3302.51N/9655.48W_", // too short. (not enough decimals 9655.48W is really 09655.48W)
