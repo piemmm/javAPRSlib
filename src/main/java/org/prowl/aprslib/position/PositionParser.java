@@ -99,6 +99,14 @@ public class PositionParser {
          posbuf = newPosbuf;
       }
 
+      // Longer longitude - repair by adding missing '0'.
+      if (posbuf[15] == '.') {
+         char[] newPosbuf = new char[posbuf.length - 1];
+         System.arraycopy(posbuf, 0, newPosbuf, 0, 9);
+         System.arraycopy(posbuf, 10, newPosbuf, 9, posbuf.length - 10);
+         posbuf = newPosbuf;
+      }
+
       // System.arraycopy(packet, cursor, posbuf, 0, packet.length - cursor);
       // latitude
       if (posbuf[2] == ' ') {
@@ -654,7 +662,7 @@ public class PositionParser {
 
    private static double parseDegMin(char[] txt, int cursor, int degSize, int len, boolean decimalDot)
          throws ParseException {
-      // System.out.println("DegMin data is " + new String(txt));
+      System.out.println("DegMin data is " + new String(txt));
       if (txt == null || txt.length < cursor + degSize + 2)
          throw new ParseException("Too short degmin data", txt.length);
       double result = 0.0d;

@@ -58,6 +58,7 @@ public class PositionParserTest {
    public void testParseUncompressedPacket() throws Exception {
       // Uncompressed test packets as seen on ARPS-IS
       String[] testCases = new String[] {
+            ";Windmill *111111z5121.33N\\900108.22EL Built in 1789, Grade 1 Listed - Open Sunday's Easter to Sept.", // alernate symbols
             ";LZ0DAC B *081940z4228.42ND02540.01EaRNG0050 440 Voice 438.45000MHz -7.6000MHz",
             ";146.80XY*111111z4359.00N/12049.76WrT173 R60 linked to Drake pk and Grizzly",
             ";DK0RE   *072012z5148.25N/00811.53EKN47 am Silo",
@@ -97,6 +98,7 @@ public class PositionParserTest {
    public void testParseInvalidUncompressedPacket() throws Exception {
       // NMEA test packets as seen on ARPS-IS
       String[] testCases = new String[] {
+            "!4401.01N/08480.01W_ CLARE COUNTY WX", // Bad minute data
             "!0000.000/00000.000>000/000",
             "/235949h0000.000/00000.000<000/000/A=000000/TinyTrak3",
             "!0000.000/00000.000v000/000/TT3",
