@@ -9,7 +9,7 @@ public class PositionParserTest {
 
    /**
     * Test for NMEA sentences with valid positions irrespective of accuracy
-    * 
+    *
     * @throws Exception
     */
    @Test
@@ -54,21 +54,32 @@ public class PositionParserTest {
 
    @Test
    public void testParseUncompressedPacket() throws Exception {
-      // NMEA test packets as seen on ARPS-IS
+      // Uncompressed test packets as seen on ARPS-IS
       String[] testCases = new String[] {
             ";146.80XY*111111z4359.00N/12049.76WrT173 R60 linked to Drake pk and Grizzly",
             ";DK0RE   *072012z5148.25N/00811.53EKN47 am Silo",
             ";*111111z4338.31N/12319.64W R50m DRAIN",
-            // "!4553.97NPZ01556.88E#/W3, APRS 9A2CD Conjo Zagreb 1", // winaprs 'PZ' - needs investigation
-            // "!3237.30N/11525.44@\"#W# Mexicali, Baja * XE2DAK-2 / UHF", investigate this too
-            // "/08623.19WR203/051/caver mobile",
             ";W9MKS   *111111z4111.40N/08858.87WE SRRC Mtg 7 PM 1M (2M if Hol) Leonore, IL w9mks.org",
-            // "!3302.51N/9655.48W_",
-            // ";444.900+*111111z2857.60N/9952.40WrT141",
-            // "=5322.97N/000�3.42W-73 via ISS. Op John {UISS54}",
-            // ";147.210VT*111111Z4403.55N/07215.46Wr147.210MHz T100 +060 R50m KB1FDA",
-            // ";444.375NC*224620h3618.62N/07830.06Wrhttp://www.carolina440.net 444.375 Mhz PL 100 Hz",
-            // ";W9MKS *111111z4111.40N/08858.87WE SRRC Mtg 7 PM 1M (2M if Hol) Leonore, IL w9mks.org"
+            ";444.375NC*224620h3618.62N/07830.06Wrhttp://www.carolina440.net 444.375 Mhz PL 100 Hz",
+            ";W9MKS *111111z4111.40N/08858.87WE SRRC Mtg 7 PM 1M (2M if Hol) Leonore, IL w9mks.org"
+      };
+
+      // Check that our list of NMEA test cases can be parsed ok
+      for (String test : testCases) {
+         Position position = PositionParser.parseUncompressed(test.getBytes());
+         assertNotNull("Position should not be null", position);
+      }
+   }
+
+   @Test
+   public void testParseUncompressedCorruptRecoverablePacket() throws Exception {
+      // Uncompressed test packets as seen on ARPS-IS
+      String[] testCases = new String[] {
+            // "!4553.97NPZ01556.88E#/W3, APRS 9A2CD Conjo Zagreb 1", // winaprs 'PZ' - needs investigation
+            // "!3237.30N/11525.44@\"#W# Mexicali, Baja * XE2DAK-2 / UHF", // investigate this too - longitude sign is @ for some reason
+            "!3302.51N/9655.48W_", // too short. (not enough decimals 9655.48W is really 09655.48W)
+            ";444.900+*111111z2857.60N/9952.40WrT141", // Another short longitude
+            ";147.210VT*111111Z4403.55N/07215.46Wr147.210MHz T100 +060 R50m KB1FDA", // Time id 'Z' instead of 'z'
 
       };
 
@@ -87,7 +98,9 @@ public class PositionParserTest {
             "/235949h0000.000/00000.000<000/000/A=000000/TinyTrak3",
             "!0000.000/00000.000v000/000/TT3",
             "!0000.000/00000.000>000/000",
-            "/08623.19WR203/051/caver mobile"
+            "=5322.97N/000�3.42W-73 via ISS. Op John {UISS54}", // invalid fix (unicode replacement character used)
+            "/08623.19WR203/051/caver mobile",
+
       };
 
       // Check that our list of NMEA test cases can be parsed ok

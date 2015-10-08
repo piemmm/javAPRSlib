@@ -64,24 +64,39 @@ public class PositionParser {
          }
          // Now jump to the time denom
          for (int i = 0; i < msgBody.length; i++) {
-            if (msgBody[i] == 'z' || msgBody[i] == 'h' || msgBody[i] == '/') {
+            if (msgBody[i] == 'Z' || msgBody[i] == 'H' || msgBody[i] == 'z' || msgBody[i] == 'h' || msgBody[i] == '/') {
                cursor = i + 1;
                break;
             }
          }
       }
 
-      if (msgBody.length < cursor + 19) {
-         throw new UnparsablePositionException("Uncompressed packet too short");
+      // This was 19, but is now 18 as some clients miss the leading 0 due to lack of following the spec.
+      // The position can still be recovered.
+      if (msgBody.length < cursor + 18) {
+         throw new UnparsablePositionException("Uncompressed packet too short:" + new String(msgBody));
       }
 
       Ambiguity positionAmbiguity = Ambiguity.NONE;
       // char[] posbuf = fap.body.substring(cursor,cursor+18).toCharArray();
+      int packetLength = 19;
+      if ((char) msgBody[cursor + 13] == '.') {
+         packetLength = 18;
+      }
       char[] posbuf = new char[msgBody.length - cursor + 1];
       int pos = 0;
-      for (int i = cursor; i < cursor + 19; i++) {
+      for (int i = cursor; i < cursor + packetLength; i++) {
          posbuf[pos] = (char) msgBody[i];
          pos++;
+      }
+
+      // Short longitude - repair by adding missing '0'.
+      if (posbuf[13] == '.') {
+         char[] newPosbuf = new char[posbuf.length + 1];
+         System.arraycopy(posbuf, 0, newPosbuf, 0, 9);
+         System.arraycopy(posbuf, 9, newPosbuf, 10, posbuf.length - 9);
+         newPosbuf[9] = '0';
+         posbuf = newPosbuf;
       }
 
       // System.arraycopy(packet, cursor, posbuf, 0, packet.length - cursor);
@@ -143,15 +158,15 @@ public class PositionParser {
          if (lath == 's' || lath == 'S')
             latitude = 0.0F - latitude;
          else if (lath != 'n' && lath != 'N')
-            throw new UnparsablePositionException("Bad latitude sign character");
+            throw new UnparsablePositionException("Bad latitude sign character:" + lath);
 
          if (lngh == 'w' || lngh == 'W')
             longitude = 0.0F - longitude;
          else if (lngh != 'e' && lngh != 'E')
-            throw new UnparsablePositionException("Bad longitude sign character");
+            throw new UnparsablePositionException("Bad longitude sign character:" + lngh);
          return new Position(latitude, longitude, positionAmbiguity, symbolTable, symbolCode);
       } catch (ParseException e) {
-         throw new UnparsablePositionException("Could not parse longitude/latitude data", e);
+         throw new UnparsablePositionException("Could not parse longitude/latitude data:" + new String(msgBody), e);
       }
    }
 
@@ -639,7 +654,7 @@ public class PositionParser {
 
    private static double parseDegMin(char[] txt, int cursor, int degSize, int len, boolean decimalDot)
          throws ParseException {
-      // System.out.println("DegMin data is "+new String(txt));
+      System.out.println("DegMin data is " + new String(txt));
       if (txt == null || txt.length < cursor + degSize + 2)
          throw new ParseException("Too short degmin data", txt.length);
       double result = 0.0d;
