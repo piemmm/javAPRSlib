@@ -23,6 +23,7 @@ package org.prowl.aprslib.parser;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a complete APRS AX.25 packet, as found in a TNC2-style string:
@@ -44,6 +45,9 @@ public class APRSPacket implements Serializable {
    static final String           REGEX_PATH_ALIASES = "^(WIDE|TRACE|RELAY)\\d*$";
 
    public APRSPacket(String source, String destination, ArrayList<Digipeater> digipeaters, InformationField info) {
+
+      System.out.println("APRSPacket: " + source + "  " + destination + "  ");
+
       this.sourceCall = source.toUpperCase();
       this.destinationCall = destination.toUpperCase();
       if (digipeaters == null) {
@@ -118,7 +122,7 @@ public class APRSPacket implements Serializable {
    /**
     * @return the digipeaters
     */
-   public ArrayList<Digipeater> getDigipeaters() {
+   public List<Digipeater> getDigipeaters() {
       return digipeaters;
    }
 

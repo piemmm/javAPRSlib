@@ -34,6 +34,7 @@ public class Digipeater extends Callsign implements Serializable {
 
    public Digipeater(String call) {
       super(call.replaceAll("\\*", ""));
+      System.out.println("DIGI:" + call);
       if (call.indexOf("*") >= 0) {
          setUsed(true);
       }

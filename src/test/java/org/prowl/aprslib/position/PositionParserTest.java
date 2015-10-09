@@ -1,5 +1,6 @@
 package org.prowl.aprslib.position;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -27,6 +28,8 @@ public class PositionParserTest {
       // Check that our list of NMEA test cases can be parsed ok
       for (String test : testCases) {
          Position position = PositionParser.parseNMEA(test.getBytes());
+         assertNotEquals(0, position.getLatitude());
+         assertNotEquals(0, position.getLongitude());
          assertNotNull("Position should not be null", position);
       }
    }
@@ -46,7 +49,7 @@ public class PositionParserTest {
       // Check that our list of NMEA test cases can be parsed ok
       for (String test : testCases) {
          try {
-            Position position = PositionParser.parseNMEA(test.getBytes());
+            PositionParser.parseNMEA(test.getBytes());
             fail("Invalid GPS data was converted to a position object for NMEA data");
          } catch (UnparsablePositionException e) {
             // Test success
@@ -74,6 +77,31 @@ public class PositionParserTest {
       // Check that our list of NMEA test cases can be parsed ok
       for (String test : testCases) {
          Position position = PositionParser.parseUncompressed(test.getBytes());
+         assertNotEquals(0, position.getLatitude());
+         assertNotEquals(0, position.getLongitude());
+         assertNotNull("Position should not be null", position);
+      }
+   }
+
+   @Test
+   public void testParseUncompressedPacketWithAmbiguity() throws Exception {
+      String[] testCases = new String[] {
+            ";145.687.5_111111z4633.53N/00023.1 Er",
+            ";145.687.5_111111z4633.53N/00023.  Er",
+            ";145.687.5_111111z4633.53N/0002 .  Er",
+            ";145.687.5_111111z4633.53N/000  .  Er",
+            ";145.687.5_111111z4633.0 N/00023.1 Er",
+            ";145.687.5_111111z4633.  N/00023.  Er",
+            ";145.687.5_111111z463 .  N/0002 .  Er",
+            ";145.687.5_111111z46  .  N/000  .  Er",
+            "!330 .  N/965 .  W_", // too short, but recoverable
+      };
+
+      // Check that our list of NMEA test cases can be parsed ok
+      for (String test : testCases) {
+         Position position = PositionParser.parseUncompressed(test.getBytes());
+         assertNotEquals(0, position.getLatitude());
+         assertNotEquals(0, position.getLongitude());
          assertNotNull("Position should not be null", position);
       }
    }
@@ -94,6 +122,8 @@ public class PositionParserTest {
       // Check that our list of NMEA test cases can be parsed ok
       for (String test : testCases) {
          Position position = PositionParser.parseUncompressed(test.getBytes());
+         assertNotEquals(0, position.getLatitude());
+         assertNotEquals(0, position.getLongitude());
          assertNotNull("Position should not be null", position);
       }
    }
@@ -115,7 +145,7 @@ public class PositionParserTest {
       // Check that our list of NMEA test cases can be parsed ok
       for (String test : testCases) {
          try {
-            Position position = PositionParser.parseUncompressed(test.getBytes());
+            PositionParser.parseUncompressed(test.getBytes());
             fail("Invalid GPS data was converted to a position object for uncompressed data: " + test);
          } catch (UnparsablePositionException e) {
             // test pass
@@ -128,9 +158,8 @@ public class PositionParserTest {
     */
    @Test
    public void invalidNMEASentence() throws Exception {
-
       try {
-         Position position = PositionParser.parseNMEA(null);
+         PositionParser.parseNMEA(null);
          fail("Invalid position did not throw exception");
       } catch (IllegalArgumentException e) {
          // Test successfull.

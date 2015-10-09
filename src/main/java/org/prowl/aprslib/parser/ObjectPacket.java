@@ -21,6 +21,7 @@ public class ObjectPacket extends InformationField implements Serializable {
     */
    public ObjectPacket(byte[] msgBody) throws Exception {
       super(msgBody);
+      System.out.println("OBJE:" + new String(msgBody));
       this.objectName = new String(msgBody, 1, 9).trim();
       this.live = (msgBody[10] == '*');
       int cursor = 18;
