@@ -64,7 +64,7 @@
 				<configuration>
 					<argLine>${argLine}</argLine>
 					<includes>
-						<include>**/AllTests.java</include>
+						<include>**</include>
 					</includes>
 				</configuration>
 			</plugin>
