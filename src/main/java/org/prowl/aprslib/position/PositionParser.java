@@ -663,7 +663,7 @@ public class PositionParser {
          throws ParseException {
       // System.out.println("DegMin data is " + new String(txt));
       if (txt == null || txt.length < cursor + degSize + 2)
-         throw new ParseException("Too short degmin data", txt.length);
+         throw new ParseException("Too short degmin data", txt == null ? 0 : txt.length);
       double result = 0.0d;
       for (int i = 0; i < degSize; ++i) {
          char c = txt[cursor + i];
