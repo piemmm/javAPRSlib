@@ -58,6 +58,7 @@ public class PositionParserTest {
    public void testParseUncompressedPacket() throws Exception {
       // Uncompressed test packets as seen on ARPS-IS
       String[] testCases = new String[] {
+            // ";G0VEA-B *082251z5037.41N/-0323.84ErDVRPTR V2 Exmouth",
             ";145.687.5_111111z4633.53N/00023.19Er",
             ";SOMERSET CO RACES UHF SYSTEM*111111z4013.93N/07906.15Wr444.475-R 443.150-R PLs 123HZ",
             ";Windmill *111111z5121.33N\\900108.22EL Built in 1789, Grade 1 Listed - Open Sunday's Easter to Sept.", // alernate symbols
