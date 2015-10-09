@@ -116,8 +116,10 @@ public class Parser {
          case '`':
          case '\'':
          case '$':
-            if (body.startsWith("$ULTW")) {
+            if (body.startsWith("$ULTW") || body.startsWith("!!")) {
                // Ultimeter II weather packet
+               type = APRSTypes.T_WX;
+
             } else {
                type = APRSTypes.T_POSITION;
                infoField = new PositionPacket(bodyBytes, dest);
