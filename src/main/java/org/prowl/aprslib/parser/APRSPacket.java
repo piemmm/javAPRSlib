@@ -46,8 +46,6 @@ public class APRSPacket implements Serializable {
 
    public APRSPacket(String source, String destination, ArrayList<Digipeater> digipeaters, InformationField info) {
 
-      System.out.println("APRSPacket: " + source + "  " + destination + "  ");
-
       this.sourceCall = source.toUpperCase();
       this.destinationCall = destination.toUpperCase();
       if (digipeaters == null) {
