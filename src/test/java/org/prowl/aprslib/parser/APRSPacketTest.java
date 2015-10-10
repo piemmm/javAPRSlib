@@ -3,6 +3,7 @@
  */
 package org.prowl.aprslib.parser;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -20,6 +21,7 @@ import org.junit.Test;
  */
 public class APRSPacketTest {
 
+   private static final String                TEST_PACKET       = "IS0AML>APRS,TCPIP*,qAC,ASSISI-IT:;EL-IS0AML*111111z3917.93N200905.68E0connection to IW0UQF-L closed";
    private static final String                TEST_CALL_1       = "AB1CDE-6";
    private static final String                TEST_CALL_2       = "APRS";
    private static final String                TEST_CALL_3       = "G0XYZ";
@@ -27,6 +29,8 @@ public class APRSPacketTest {
    private static final String                DIGI_CALL_2_Q     = "qAC";
    private static final String                DIGI_CALL_3_IGATE = "T2DIGI";
    private static final String                DIGI_SSID_1       = "2";
+   private static final byte[]                AX25              = new byte[] { -126, -96, -92, -90, 64, 64, -32, -126, -124, 98, -122, -120, -118, 108, -116, -114, 104, -112, -110, -108, -28, -30, -126, -122, 64, 64, 64, 96, -88, 100, -120, -110, -114, -110, 97, 3, -16, 59, 80, 68, 49,
+                                                                      66, 76, 85, 32, 32, 32, 42, 48, 48, 48, 48, 48, 48, 122, 53, 50, 48, 48, 46, 57, 57, 78, 47, 48, 48, 53, 49, 48, 46, 56, 48, 69, 45, 66, 97, 114, 116 };
    private static final ArrayList<Digipeater> DIGIPEATERS       = new ArrayList<>();
    private static InformationField            INFORMATIONFIELD;
    private static APRSPacket                  APRSPACKET;
@@ -207,133 +211,46 @@ public class APRSPacketTest {
       assertEquals(APRSTypes.T_KILL, p.getType());
    }
 
-   //
-   // /**
-   // * Test method for {@link org.prowl.aprslib.parser.APRSPacket#getOriginalString()}.
-   // */
-   // @Test
-   // public void testGetOriginalString() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link org.prowl.aprslib.parser.APRSPacket#setOriginalString(java.lang.String)}.
-   // */
-   // @Test
-   // public void testSetOriginalString() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link org.prowl.aprslib.parser.APRSPacket#toString()}.
-   // */
-   // @Test
-   // public void testToString() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link org.prowl.aprslib.parser.APRSPacket#toAX25Frame()}.
-   // */
-   // @Test
-   // public void testToAX25Frame() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#Object()}.
-   // */
-   // @Test
-   // public void testObject() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#getClass()}.
-   // */
-   // @Test
-   // public void testGetClass() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#hashCode()}.
-   // */
-   // @Test
-   // public void testHashCode() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#equals(java.lang.Object)}.
-   // */
-   // @Test
-   // public void testEquals() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#clone()}.
-   // */
-   // @Test
-   // public void testClone() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#toString()}.
-   // */
-   // @Test
-   // public void testToString1() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#notify()}.
-   // */
-   // @Test
-   // public void testNotify() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#notifyAll()}.
-   // */
-   // @Test
-   // public void testNotifyAll() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#wait(long)}.
-   // */
-   // @Test
-   // public void testWaitLong() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#wait(long, int)}.
-   // */
-   // @Test
-   // public void testWaitLongInt() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#wait()}.
-   // */
-   // @Test
-   // public void testWait() {
-   // fail("Not yet implemented");
-   // }
-   //
-   // /**
-   // * Test method for {@link java.lang.Object#finalize()}.
-   // */
-   // @Test
-   // public void testFinalize() {
-   // fail("Not yet implemented");
-   // }
+   /**
+    * Test method for {@link org.prowl.aprslib.parser.APRSPacket#getOriginalString()}.
+    */
+   @Test
+   public void testGetOriginalString() throws Exception {
+      APRSPacket p = Parser.parse(TEST_PACKET);
+      assertEquals(TEST_PACKET, p.getOriginalString());
+   }
+
+   /**
+    * Test method for {@link org.prowl.aprslib.parser.APRSPacket#setOriginalString(java.lang.String)}.
+    */
+   @Test
+   public void testSetOriginalString() {
+      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, DIGIPEATERS, INFORMATIONFIELD);
+      assertNull(p.getOriginalString());
+      p.setOriginalString(TEST_PACKET);
+      assertEquals(TEST_PACKET, p.getOriginalString());
+   }
+
+   /**
+    * Test method for {@link org.prowl.aprslib.parser.APRSPacket#toString()}.
+    */
+   @Test
+   public void testToString() {
+      assertTrue("Contains IGATE", APRSPACKET.toString().contains(DIGI_CALL_3_IGATE));
+      assertTrue("Contains DIGI Call 1", APRSPACKET.toString().contains(DIGI_CALL_1));
+      assertTrue("Contains '>'", APRSPACKET.toString().contains(">"));
+   }
+
+   /**
+    * Test method for {@link org.prowl.aprslib.parser.APRSPacket#toAX25Frame()}.
+    */
+   @Test
+   public void testToAX25Frame() {
+      // for (byte b : APRSPACKET.toAX25Frame()) {
+      // System.out.print("," + b);
+      // }
+      // System.out.println("");
+      assertArrayEquals(AX25, APRSPACKET.toAX25Frame());
+   }
 
 }
