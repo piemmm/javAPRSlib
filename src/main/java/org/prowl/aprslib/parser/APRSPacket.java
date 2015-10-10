@@ -146,6 +146,7 @@ public class APRSPacket implements Serializable {
       for (Digipeater digi : digipeaters) {
          sb.append("," + digi.toString());
       }
+      sb.delete(0, 1); // Remove first comma
       return sb.toString();
    }
 
