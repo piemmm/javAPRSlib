@@ -126,6 +126,7 @@ public class Parser {
             }
             break;
          case ':':
+            type = APRSTypes.T_MESSAGE;
             infoField = new MessagePacket(bodyBytes, dest);
             break;
          case ';':
