@@ -26,10 +26,14 @@ public class APRSPacketTest {
    private static final String                TEST_CALL_2       = "APRS";
    private static final String                TEST_CALL_3       = "G0XYZ";
    private static final String                DIGI_CALL_1       = "FG4HIJ";
-   private static final String                DIGI_CALL_2_Q     = "qAC";
+   private static final String                DIGI_CALL_2_QAC   = "qAC";
+   private static final String                DIGI_CALL_2_QAR   = "qAR";
+   private static final String                DIGI_CALL_2_QAS   = "qAS";
+   private static final String                DIGI_CALL_2_QAO   = "qAO";
+
    private static final String                DIGI_CALL_3_IGATE = "T2DIGI";
    private static final String                DIGI_SSID_1       = "2";
-   private static final byte[]                AX25              = new byte[] { -126, -96, -92, -90, 64, 64, -32, -126, -124, 98, -122, -120, -118, 108, -116, -114, 104, -112, -110, -108, -28, -30, -126, -122, 64, 64, 64, 96, -88, 100, -120, -110, -114, -110, 97, 3, -16, 59, 80, 68, 49,
+   private static final byte[]                AX25              = new byte[] { -126, -96, -92, -90, 64, 64, -32, -126, -124, 98, -122, -120, -118, 108, -116, -114, 104, -112, -110, -108, -28, -30, -126, -92, 64, 64, 64, 96, -88, 100, -120, -110, -114, -110, 97, 3, -16, 59, 80, 68, 49,
                                                                       66, 76, 85, 32, 32, 32, 42, 48, 48, 48, 48, 48, 48, 122, 53, 50, 48, 48, 46, 57, 57, 78, 47, 48, 48, 53, 49, 48, 46, 56, 48, 69, 45, 66, 97, 114, 116 };
    private static final ArrayList<Digipeater> DIGIPEATERS       = new ArrayList<>();
    private static InformationField            INFORMATIONFIELD;
@@ -38,7 +42,7 @@ public class APRSPacketTest {
    @BeforeClass
    public static void setup() throws Exception {
       DIGIPEATERS.add(new Digipeater(DIGI_CALL_1 + "-" + DIGI_SSID_1 + "*"));
-      DIGIPEATERS.add(new Digipeater(DIGI_CALL_2_Q));
+      DIGIPEATERS.add(new Digipeater(DIGI_CALL_2_QAR));
       DIGIPEATERS.add(new Digipeater(DIGI_CALL_3_IGATE));
       INFORMATIONFIELD = new ObjectPacket(";PD1BLU   *000000z5200.99N/00510.80E-Bart".getBytes());
       APRSPACKET = new APRSPacket(TEST_CALL_1, TEST_CALL_2, DIGIPEATERS, INFORMATIONFIELD);
@@ -77,7 +81,27 @@ public class APRSPacketTest {
     */
    @Test
    public void testGetIgate() {
-      assertEquals(DIGI_CALL_3_IGATE, APRSPACKET.getIgate());
+      List<Digipeater> digis = new ArrayList<>();
+
+      Digipeater qcode = new Digipeater(DIGI_CALL_2_QAR);
+      digis.add(new Digipeater(DIGI_CALL_1 + "-" + DIGI_SSID_1 + "*"));
+      digis.add(qcode);
+      digis.add(new Digipeater(DIGI_CALL_3_IGATE));
+      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, digis, INFORMATIONFIELD);
+      assertEquals(DIGI_CALL_3_IGATE, p.getIgate());
+
+      qcode.setCallsign(DIGI_CALL_2_QAS);
+      assertEquals(DIGI_CALL_3_IGATE, p.getIgate());
+
+      qcode.setCallsign(DIGI_CALL_2_QAC);
+      assertEquals(DIGI_CALL_3_IGATE, p.getIgate());
+
+      qcode.setCallsign(DIGI_CALL_2_QAO);
+      assertEquals(DIGI_CALL_3_IGATE, p.getIgate());
+
+      qcode.setCallsign("");
+      assertEquals("", p.getIgate());
+
    }
 
    /**
@@ -104,7 +128,7 @@ public class APRSPacketTest {
       List<Digipeater> digipeaters = APRSPACKET.getDigipeaters();
       assertEquals(DIGIPEATERS.size(), digipeaters.size());
       assertEquals(DIGI_CALL_1, digipeaters.get(0).getCallsign());
-      assertEquals(DIGI_CALL_2_Q, digipeaters.get(1).getCallsign());
+      assertEquals(DIGI_CALL_2_QAR, digipeaters.get(1).getCallsign());
       assertEquals(DIGI_CALL_3_IGATE, digipeaters.get(2).getCallsign());
 
       APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, null, INFORMATIONFIELD);
@@ -131,6 +155,10 @@ public class APRSPacketTest {
    @Test
    public void testGetLastUsedDigi() {
       assertEquals(DIGI_CALL_1, APRSPACKET.getLastUsedDigi());
+
+      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, new ArrayList<Digipeater>(), INFORMATIONFIELD);
+      assertNull(p.getLastUsedDigi());
+
    }
 
    /**
@@ -138,7 +166,7 @@ public class APRSPacketTest {
     */
    @Test
    public void testGetDigiString() {
-      assertEquals(DIGI_CALL_1 + "-" + DIGI_SSID_1 + "*," + DIGI_CALL_2_Q + "," + DIGI_CALL_3_IGATE, APRSPACKET.getDigiString());
+      assertEquals(DIGI_CALL_1 + "-" + DIGI_SSID_1 + "*," + DIGI_CALL_2_QAR + "," + DIGI_CALL_3_IGATE, APRSPACKET.getDigiString());
    }
 
    /**

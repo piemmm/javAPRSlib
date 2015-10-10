@@ -32,19 +32,19 @@ import java.util.List;
  * @author johng
  */
 public class APRSPacket implements Serializable {
-   private static final long     serialVersionUID   = 1L;
-   private String                originalString;
-   private String                sourceCall;
-   private String                destinationCall;
-   private ArrayList<Digipeater> digipeaters;
-   private char                  dti;
-   private InformationField      aprsInformation;
-   protected boolean             hasFault;
-   private APRSTypes             type;
+   private static final long serialVersionUID   = 1L;
+   private String            originalString;
+   private String            sourceCall;
+   private String            destinationCall;
+   private List<Digipeater>  digipeaters;
+   private char              dti;
+   private InformationField  aprsInformation;
+   protected boolean         hasFault;
+   private APRSTypes         type;
 
-   static final String           REGEX_PATH_ALIASES = "^(WIDE|TRACE|RELAY)\\d*$";
+   static final String       REGEX_PATH_ALIASES = "^(WIDE|TRACE|RELAY)\\d*$";
 
-   public APRSPacket(String source, String destination, ArrayList<Digipeater> digipeaters, InformationField info) {
+   public APRSPacket(String source, String destination, List<Digipeater> digipeaters, InformationField info) {
 
       this.sourceCall = source.toUpperCase();
       this.destinationCall = destination.toUpperCase();
