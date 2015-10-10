@@ -21,10 +21,10 @@ import org.junit.Test;
  */
 public class APRSPacketTest {
 
-   private static final String                TEST_PACKET       = "IS0AML>APRS,TCPIP*,qAC,ASSISI-IT:;EL-IS0AML*111111z3917.93N200905.68E0connection to IW0UQF-L closed";
-   private static final String                TEST_CALL_1       = "AB1CDE-6";
-   private static final String                TEST_CALL_2       = "APRS";
-   private static final String                TEST_CALL_3       = "G0XYZ";
+   private static final String                TESPACKET         = "IS0AML>APRS,TCPIP*,qAC,ASSISI-IT:;EL-IS0AML*111111z3917.93N200905.68E0connection to IW0UQF-L closed";
+   private static final String                TESCALL_1         = "AB1CDE-6";
+   private static final String                TESCALL_2         = "APRS";
+   private static final String                TESCALL_3         = "G0XYZ";
    private static final String                DIGI_CALL_1       = "FG4HIJ";
    private static final String                DIGI_CALL_2_QAC   = "qAC";
    private static final String                DIGI_CALL_2_QAR   = "qAR";
@@ -45,7 +45,7 @@ public class APRSPacketTest {
       DIGIPEATERS.add(new Digipeater(DIGI_CALL_2_QAR));
       DIGIPEATERS.add(new Digipeater(DIGI_CALL_3_IGATE));
       INFORMATIONFIELD = new ObjectPacket(";PD1BLU   *000000z5200.99N/00510.80E-Bart".getBytes());
-      APRSPACKET = new APRSPacket(TEST_CALL_1, TEST_CALL_2, DIGIPEATERS, INFORMATIONFIELD);
+      APRSPACKET = new APRSPacket(TESCALL_1, TESCALL_2, DIGIPEATERS, INFORMATIONFIELD);
    }
 
    /**
@@ -64,7 +64,7 @@ public class APRSPacketTest {
    @Test
    public void testGetBaseCall() {
       assertEquals(DIGI_CALL_1, APRSPacket.getBaseCall(DIGI_CALL_1 + "-" + DIGI_SSID_1));
-      assertEquals(TEST_CALL_3, APRSPacket.getBaseCall(TEST_CALL_3));
+      assertEquals(TESCALL_3, APRSPacket.getBaseCall(TESCALL_3));
    }
 
    /**
@@ -73,7 +73,7 @@ public class APRSPacketTest {
    @Test
    public void testGetSsid() {
       assertEquals(DIGI_SSID_1, APRSPacket.getSsid(DIGI_CALL_1 + "-" + DIGI_SSID_1));
-      assertEquals("0", APRSPacket.getSsid(TEST_CALL_3));
+      assertEquals("0", APRSPacket.getSsid(TESCALL_3));
    }
 
    /**
@@ -87,7 +87,7 @@ public class APRSPacketTest {
       digis.add(new Digipeater(DIGI_CALL_1 + "-" + DIGI_SSID_1 + "*"));
       digis.add(qcode);
       digis.add(new Digipeater(DIGI_CALL_3_IGATE));
-      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, digis, INFORMATIONFIELD);
+      APRSPacket p = new APRSPacket(TESCALL_1, TESCALL_2, digis, INFORMATIONFIELD);
       assertEquals(DIGI_CALL_3_IGATE, p.getIgate());
 
       qcode.setCallsign(DIGI_CALL_2_QAS);
@@ -109,7 +109,7 @@ public class APRSPacketTest {
     */
    @Test
    public void testGetSourceCall() {
-      assertEquals(TEST_CALL_1, APRSPACKET.getSourceCall());
+      assertEquals(TESCALL_1, APRSPACKET.getSourceCall());
    }
 
    /**
@@ -117,7 +117,7 @@ public class APRSPacketTest {
     */
    @Test
    public void testGetDestinationCall() {
-      assertEquals(TEST_CALL_2, APRSPACKET.getDestinationCall());
+      assertEquals(TESCALL_2, APRSPACKET.getDestinationCall());
    }
 
    /**
@@ -131,7 +131,7 @@ public class APRSPacketTest {
       assertEquals(DIGI_CALL_2_QAR, digipeaters.get(1).getCallsign());
       assertEquals(DIGI_CALL_3_IGATE, digipeaters.get(2).getCallsign());
 
-      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, null, INFORMATIONFIELD);
+      APRSPacket p = new APRSPacket(TESCALL_1, TESCALL_2, null, INFORMATIONFIELD);
       assertEquals("TCPIP", p.getDigipeaters().get(0).getCallsign());
    }
 
@@ -140,7 +140,7 @@ public class APRSPacketTest {
     */
    @Test
    public void testSetDigipeaters() {
-      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, DIGIPEATERS, INFORMATIONFIELD);
+      APRSPacket p = new APRSPacket(TESCALL_1, TESCALL_2, DIGIPEATERS, INFORMATIONFIELD);
 
       p.setDigipeaters(new ArrayList());
       assertEquals(0, p.getDigipeaters().size());
@@ -156,7 +156,7 @@ public class APRSPacketTest {
    public void testGetLastUsedDigi() {
       assertEquals(DIGI_CALL_1, APRSPACKET.getLastUsedDigi());
 
-      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, new ArrayList<Digipeater>(), INFORMATIONFIELD);
+      APRSPacket p = new APRSPacket(TESCALL_1, TESCALL_2, new ArrayList<Digipeater>(), INFORMATIONFIELD);
       assertNull(p.getLastUsedDigi());
 
    }
@@ -176,7 +176,7 @@ public class APRSPacketTest {
    public void testGetDti() {
       assertEquals(';', APRSPACKET.getDti());
 
-      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, DIGIPEATERS, null);
+      APRSPacket p = new APRSPacket(TESCALL_1, TESCALL_2, DIGIPEATERS, null);
       assertEquals(' ', p.getDti());
    }
 
@@ -209,7 +209,7 @@ public class APRSPacketTest {
     */
    @Test
    public void testSetHasFault() {
-      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, DIGIPEATERS, INFORMATIONFIELD);
+      APRSPacket p = new APRSPacket(TESCALL_1, TESCALL_2, DIGIPEATERS, INFORMATIONFIELD);
       assertFalse(p.hasFault());
       p.setHasFault(true);
       assertTrue(p.hasFault());
@@ -224,8 +224,8 @@ public class APRSPacketTest {
    @Test
    public void testGetType() throws Exception {
       assertNull(APRSPACKET.getType());
-      APRSPacket p = Parser.parseBody(TEST_CALL_1, TEST_CALL_2, DIGIPEATERS, new String(INFORMATIONFIELD.rawBytes));
-      assertEquals(APRSTypes.T_OBJECT, p.getType());
+      APRSPacket p = Parser.parseBody(TESCALL_1, TESCALL_2, DIGIPEATERS, new String(INFORMATIONFIELD.rawBytes));
+      assertEquals(APRSTypes.OBJECT, p.getType());
    }
 
    /**
@@ -233,10 +233,10 @@ public class APRSPacketTest {
     */
    @Test
    public void testSetType() {
-      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, DIGIPEATERS, INFORMATIONFIELD);
+      APRSPacket p = new APRSPacket(TESCALL_1, TESCALL_2, DIGIPEATERS, INFORMATIONFIELD);
       assertNull(p.getType());
-      p.setType(APRSTypes.T_KILL);
-      assertEquals(APRSTypes.T_KILL, p.getType());
+      p.setType(APRSTypes.KILL);
+      assertEquals(APRSTypes.KILL, p.getType());
    }
 
    /**
@@ -244,8 +244,8 @@ public class APRSPacketTest {
     */
    @Test
    public void testGetOriginalString() throws Exception {
-      APRSPacket p = Parser.parse(TEST_PACKET);
-      assertEquals(TEST_PACKET, p.getOriginalString());
+      APRSPacket p = Parser.parse(TESPACKET);
+      assertEquals(TESPACKET, p.getOriginalString());
    }
 
    /**
@@ -253,10 +253,10 @@ public class APRSPacketTest {
     */
    @Test
    public void testSetOriginalString() {
-      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, DIGIPEATERS, INFORMATIONFIELD);
+      APRSPacket p = new APRSPacket(TESCALL_1, TESCALL_2, DIGIPEATERS, INFORMATIONFIELD);
       assertNull(p.getOriginalString());
-      p.setOriginalString(TEST_PACKET);
-      assertEquals(TEST_PACKET, p.getOriginalString());
+      p.setOriginalString(TESPACKET);
+      assertEquals(TESPACKET, p.getOriginalString());
    }
 
    /**

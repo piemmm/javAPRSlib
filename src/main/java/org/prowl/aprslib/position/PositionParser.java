@@ -431,9 +431,9 @@ public class PositionParser {
          // GPGGA,000000,5132.038,N,11310.221,W,1,09,0.8,940.0,M,-17.7,,
          // v=1, timestamp odd, coords look fine
          // GPGGA,,,,,,0,00,,,,,,,*66
-         // v=0, invalid
+         // v=0, no 'lock'. Could still be using last known position, or 'good enough'
          // GPGGA,121230,4518.7931,N,07322.3202,W,2,08,1.0,40.0,M,-32.4,M,,*46
-         // v=2, looks valid ?
+         // v=2, DGPS - valid.
          // GPGGA,193115.00,3302.50182,N,11651.22581,W,1,08,01.6,00465.90,M,-32.891,M,,*5F
          // $GPGGA,hhmmss.dd,xxmm.dddd,<N|S>,yyymm.dddd,<E|W>,v,
          // ss,d.d,h.h,M,g.g,M,a.a,xxxx*hh<CR><LF>

@@ -106,7 +106,7 @@ public class Parser {
       byte[] bodyBytes = body.getBytes();
       byte dti = bodyBytes[0];
       InformationField infoField = null;
-      APRSTypes type = APRSTypes.T_UNSPECIFIED;
+      APRSTypes type = APRSTypes.UNSPECIFIED;
       boolean hasFault = false;
       switch (dti) {
          case '!':
@@ -118,21 +118,21 @@ public class Parser {
          case '$':
             if (body.startsWith("$ULTW") || body.startsWith("!!")) {
                // Ultimeter II weather packet
-               type = APRSTypes.T_WX;
+               type = APRSTypes.WX;
 
             } else {
-               type = APRSTypes.T_POSITION;
+               type = APRSTypes.POSITION;
                infoField = new PositionPacket(bodyBytes, dest);
             }
             break;
          case ':':
-            type = APRSTypes.T_MESSAGE;
+            type = APRSTypes.MESSAGE;
             infoField = new MessagePacket(bodyBytes, dest);
             break;
          case ';':
             if (bodyBytes.length > 29) {
                // System.out.println("Parsing an OBJECT");
-               type = APRSTypes.T_OBJECT;
+               type = APRSTypes.OBJECT;
                infoField = new ObjectPacket(bodyBytes);
             } else {
                System.err.println("Object packet body too short for valid object");
@@ -140,16 +140,16 @@ public class Parser {
             }
             break;
          case '>':
-            type = APRSTypes.T_STATUS;
+            type = APRSTypes.STATUS;
             break;
          case '<':
-            type = APRSTypes.T_STATCAPA;
+            type = APRSTypes.STATCAPA;
             break;
          case '?':
-            type = APRSTypes.T_QUERY;
+            type = APRSTypes.QUERY;
             break;
          case ')':
-            type = APRSTypes.T_ITEM;
+            type = APRSTypes.ITEM;
             if (bodyBytes.length > 18) {
                infoField = new ItemPacket(bodyBytes);
             } else {
@@ -167,13 +167,13 @@ public class Parser {
          case '#': // Peet Bros U-II Weather Station
          case '*': // Peet Bros U-II Weather Station
          case '_': // Weather report without position
-            type = APRSTypes.T_WX;
+            type = APRSTypes.WX;
             break;
          case '{':
-            type = APRSTypes.T_USERDEF;
+            type = APRSTypes.USERDEF;
             break;
          case '}': // 3rd-party
-            type = APRSTypes.T_THIRDPARTY;
+            type = APRSTypes.THIRDPARTY;
             break;
 
          default:

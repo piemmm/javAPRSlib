@@ -28,11 +28,63 @@ public enum APRSTypes implements java.io.Serializable {
    /**
     * Item type not specified
     */
-   T_UNSPECIFIED,
+   UNSPECIFIED,
    /**
-    *
+    * Position Report
     */
-   T_POSITION, T_WX, T_THIRDPARTY, T_QUERY, T_OBJECT, T_ITEM, T_NORMAL, T_KILL, T_STATUS, T_STATCAPA, T_TELEMETRY, T_USERDEF, T_MESSAGE, T_NWS; // Used on fap.getSubtype()
+   POSITION,
+   /**
+    * Weather Station
+    */
+   WX,
+   /**
+   *
+   */
+   THIRDPARTY,
+   /**
+   *
+   */
+   QUERY,
+   /**
+   *
+   */
+   OBJECT,
+   /**
+   *
+   */
+   ITEM,
+   /**
+   *
+   */
+   NORMAL,
+   /**
+   *
+   */
+   KILL,
+   /**
+   *
+   */
+   STATUS,
+   /**
+   *
+   */
+   STATCAPA,
+   /**
+    * Telemetry report format
+    */
+   TELEMETRY,
+   /**
+   *
+   */
+   USERDEF,
+   /**
+   *
+   */
+   MESSAGE,
+   /**
+   *
+   */
+   NWS; // Used on fap.getSubtype()
 
    ;
 }

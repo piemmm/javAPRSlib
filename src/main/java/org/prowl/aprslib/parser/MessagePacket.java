@@ -79,7 +79,7 @@ public class MessagePacket extends InformationField implements Serializable {
       if (messageBody.equals("rej"))
          isRej = true;
       super.setDataTypeIdentifier(':');
-      super.type = APRSTypes.T_MESSAGE;
+      super.type = APRSTypes.MESSAGE;
    }
 
    /**

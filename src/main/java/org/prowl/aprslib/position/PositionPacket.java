@@ -41,7 +41,7 @@ public class PositionPacket extends InformationField implements java.io.Serializ
          case '\'':
          case '`': // Possibly MICe
             // (char)packet.length >= 9 ?
-            type = APRSTypes.T_POSITION;
+            type = APRSTypes.POSITION;
             position = PositionParser.parseMICe(msgBody, destinationField);
             this.extension = PositionParser.parseMICeExtension(msgBody, destinationField);
             positionSource = "MICe";
@@ -55,7 +55,7 @@ public class PositionPacket extends InformationField implements java.io.Serializ
             if (msgBody[1] == 'U' && // "$ULT..." -- Ultimeter 2000 weather
             // instrument
                   msgBody[2] == 'L' && msgBody[3] == 'T') {
-               type = APRSTypes.T_WX;
+               type = APRSTypes.WX;
                break;
             }
          case '=':
@@ -70,7 +70,7 @@ public class PositionPacket extends InformationField implements java.io.Serializ
                // ! and / have messaging, / and @ have a prepended
                // timestamp
 
-               type = APRSTypes.T_POSITION;
+               type = APRSTypes.POSITION;
                cursor = 1;
 
                if (packetType == '/' || packetType == '@') {
@@ -101,7 +101,7 @@ public class PositionPacket extends InformationField implements java.io.Serializ
             }
          case '$':
             if (msgBody.length > 10) {
-               type = APRSTypes.T_POSITION;
+               type = APRSTypes.POSITION;
                position = PositionParser.parseNMEA(msgBody);
                positionSource = "NMEA";
             } else {
@@ -117,7 +117,7 @@ public class PositionPacket extends InformationField implements java.io.Serializ
 
    public PositionPacket(Position position, String comment) {
       this.position = position;
-      this.type = APRSTypes.T_POSITION;
+      this.type = APRSTypes.POSITION;
       this.comment = comment;
    }
 
