@@ -27,8 +27,10 @@ public class Utilities {
    public static void main(String[] args) {
       if (args.length == 0) {
          System.out.println("Usage:  AprsPass <callsign>");
-         System.exit(1);
+      } else if (args.length == 1) {
+         System.out.println("Hash: " + doHash(args[0]));
       }
+      System.exit(1);
    }
 
    public static int doHash(String callSign) {
