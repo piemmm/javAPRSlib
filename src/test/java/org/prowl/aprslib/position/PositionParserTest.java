@@ -1,10 +1,13 @@
 package org.prowl.aprslib.position;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
+import org.prowl.aprslib.parser.PHGExtension;
 
 public class PositionParserTest {
 
@@ -151,6 +154,53 @@ public class PositionParserTest {
             // test pass
          }
       }
+   }
+
+   @Test
+   public void testParseUncompressedExtension() throws Exception {
+      assertNull(PositionParser.parseUncompressedExtension("@101008z5924.70N/01629.20E".getBytes(), 8)); // No extension present
+
+      // CourseAndSpeed
+      CourseAndSpeedExtension e1 = (CourseAndSpeedExtension) PositionParser.parseUncompressedExtension("=6027.31N/02612.17E$306/034/A=000123 TB4JGH0 F7".getBytes(), 1);
+      assertEquals(306, e1.getCourse());
+      assertEquals(34, e1.getSpeed());
+      e1 = (CourseAndSpeedExtension) PositionParser.parseUncompressedExtension("=3553.03N/11959.61E$342/000/A=000033 青岛BG4PEF欢迎您438500-5".getBytes(), 1);
+      assertEquals(342, e1.getCourse());
+      assertEquals(0, e1.getSpeed());
+
+      // PHG
+      PHGExtension e2 = (PHGExtension) PositionParser.parseUncompressedExtension("!5029.19N/00916.55E#PHG4800 APRS Fill-in-Digi Herchenhain 733m NN".getBytes(), 1);
+      assertEquals(0, e2.getDirectivity());
+      assertEquals(0, e2.getGain());
+      assertEquals(2560, e2.getHeight());
+      assertEquals(16, e2.getPower());
+
+      e2 = (PHGExtension) PositionParser.parseUncompressedExtension("=4628.00N/00047.32WIPHG20302/AGWPE 2004-1108 /UI-V 2.03 {UIV32}".getBytes(), 1);
+      assertEquals(0, e2.getDirectivity());
+      assertEquals(3, e2.getGain());
+      assertEquals(10, e2.getHeight());
+      assertEquals(4, e2.getPower());
+   }
+
+   @Test
+   public void parseMICe() throws Exception {
+      Position p1 = PositionParser.parseMICe("`0(=m>%P/\"4N}  144.64MHz 05.53V".getBytes(), "RRUYV9");
+      assertEquals(-1, p1.getAltitude());
+      assertEquals(22.99483, p1.getLatitude(), 0.0000001);
+      assertEquals(120.2055, p1.getLongitude(), 0.0000001);
+      assertEquals(Ambiguity.NONE, p1.getPositionAmbiguity());
+
+      p1 = PositionParser.parseMICe("`&.@oU<>/]\"6J}=".getBytes(), "U9UY18");
+      assertEquals(-1, p1.getAltitude());
+      assertEquals(59.98633, p1.getLatitude(), 0.0000001);
+      assertEquals(10.3060, p1.getLongitude(), 0.0000001);
+      assertEquals(Ambiguity.NONE, p1.getPositionAmbiguity());
+
+      p1 = PositionParser.parseMICe("`0<Kl#>/\"4a}144.64Mhz-1W 3.97V 33.7C TF".getBytes(), "RTPTV7");
+      assertEquals(-1, p1.getAltitude());
+      assertEquals(24.07783, p1.getLatitude(), 0.0000001);
+      assertEquals(120.54117, p1.getLongitude(), 0.0000001);
+      assertEquals(Ambiguity.NONE, p1.getPositionAmbiguity());
    }
 
    /**

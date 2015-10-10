@@ -182,12 +182,14 @@ public class PositionParser {
    }
 
    public static DataExtension parseUncompressedExtension(byte[] msgBody, int cursor) throws Exception {
+
       DataExtension de = null;
       // since the symbol code is position (cursor + 18), we start looking for
       // extensions at position 19
       if (msgBody.length <= 18 + cursor) {
          return null;
       }
+
       if ((char) msgBody[19 + cursor] == 'P' && (char) msgBody[20 + cursor] == 'H'
             && (char) msgBody[21 + cursor] == 'G') {
          PHGExtension phg = new PHGExtension();
@@ -197,12 +199,12 @@ public class PositionParser {
             phg.setGain(Integer.parseInt(new String(msgBody, 24 + cursor, 1)));
             phg.setDirectivity(Integer.parseInt(new String(msgBody, 25 + cursor, 1)));
             de = phg;
+
          } catch (NumberFormatException nfe) {
             de = null;
          }
       } else if ((char) msgBody[22 + cursor] == '/' && (char) msgBody[18 + cursor] != '_') {
          CourseAndSpeedExtension cse = new CourseAndSpeedExtension();
-
          String courseString = new String(msgBody, cursor + 19, 3);
          String speedString = new String(msgBody, cursor + 23, 3);
          int course = 0;
@@ -220,13 +222,13 @@ public class PositionParser {
          cse.setSpeed(speed);
          de = cse;
       }
+
       return de;
    }
 
    public static Position parseMICe(byte[] msgBody, final String destinationCall) throws Exception {
       // Check that the destination call exists and is
       // of the right size for mic-e
-      // System.out.print("MICe:");
       String dcall = destinationCall;
       if (destinationCall.indexOf("-") > -1) {
          dcall = destinationCall.substring(0, destinationCall.indexOf("-"));
@@ -362,6 +364,8 @@ public class PositionParser {
       if (destcall[1 + 4] >= 'P') { // Longitude east/west sign
          lng = -lng; // east positive, west negative
       }
+      // System.out.println("MICe:" + new String(msgBody) + " " + destinationCall);
+
       return new Position(lat, lng, posAmbiguity, (char) msgBody[1 + 7], (char) msgBody[1 + 6]);
    }
 
