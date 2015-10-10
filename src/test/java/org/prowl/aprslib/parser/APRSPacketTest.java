@@ -22,6 +22,7 @@ public class APRSPacketTest {
 
    private static final String                TEST_CALL_1       = "AB1CDE-6";
    private static final String                TEST_CALL_2       = "APRS";
+   private static final String                TEST_CALL_3       = "G0XYZ";
    private static final String                DIGI_CALL_1       = "FG4HIJ";
    private static final String                DIGI_CALL_2_Q     = "qAC";
    private static final String                DIGI_CALL_3_IGATE = "T2DIGI";
@@ -55,6 +56,7 @@ public class APRSPacketTest {
    @Test
    public void testGetBaseCall() {
       assertEquals(DIGI_CALL_1, APRSPacket.getBaseCall(DIGI_CALL_1 + "-" + DIGI_SSID_1));
+      assertEquals(TEST_CALL_3, APRSPacket.getBaseCall(TEST_CALL_3));
    }
 
    /**
@@ -63,6 +65,7 @@ public class APRSPacketTest {
    @Test
    public void testGetSsid() {
       assertEquals(DIGI_SSID_1, APRSPacket.getSsid(DIGI_CALL_1 + "-" + DIGI_SSID_1));
+      assertEquals("0", APRSPacket.getSsid(TEST_CALL_3));
    }
 
    /**
@@ -99,6 +102,9 @@ public class APRSPacketTest {
       assertEquals(DIGI_CALL_1, digipeaters.get(0).getCallsign());
       assertEquals(DIGI_CALL_2_Q, digipeaters.get(1).getCallsign());
       assertEquals(DIGI_CALL_3_IGATE, digipeaters.get(2).getCallsign());
+
+      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, null, INFORMATIONFIELD);
+      assertEquals("TCPIP", p.getDigipeaters().get(0).getCallsign());
    }
 
    /**
@@ -137,6 +143,9 @@ public class APRSPacketTest {
    @Test
    public void testGetDti() {
       assertEquals(';', APRSPACKET.getDti());
+
+      APRSPacket p = new APRSPacket(TEST_CALL_1, TEST_CALL_2, DIGIPEATERS, null);
+      assertEquals(' ', p.getDti());
    }
 
    /**
