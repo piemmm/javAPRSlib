@@ -41,6 +41,8 @@ public class Position implements java.io.Serializable {
    }
 
    public Position(double lat, double lon, Ambiguity posAmb, char st, char sc) {
+      // System.out.println("ll:" + lat + " " + lon + " " + st + " " + sc);
+
       this.latitude = Math.round(lat * 100000) * 0.00001d;
       this.longitude = Math.round(lon * 100000) * 0.00001d;
       this.positionAmbiguity = posAmb;
@@ -245,17 +247,6 @@ public class Position implements java.io.Serializable {
       double lng1 = this.getLongitude();
       double lng2 = position2.getLatitude();
       return distFrom(lat1, lng1, lat2, lng2);
-   }
-
-   public static void main(String[] args) {
-      Position pos = new Position();
-      pos.setLatitude(34.12558);
-      pos.setLongitude(-84.13697);
-      pos.setSymbolCode('o');
-      pos.setSymbolTable('/');
-      System.out.println("latitude is " + pos.getLatitude());
-      System.out.println("Position string is " + pos.toString());
-      System.out.println("Compressed string is " + pos.toCompressedString());
    }
 
 }
