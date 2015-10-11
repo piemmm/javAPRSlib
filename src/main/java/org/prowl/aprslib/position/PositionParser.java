@@ -89,14 +89,14 @@ public class PositionParser {
          pos++;
       }
 
-      // Short longitude - repair by adding missing '0'.
-      if (posbuf[13] == '.') {
-         char[] newPosbuf = new char[posbuf.length + 1];
-         System.arraycopy(posbuf, 0, newPosbuf, 0, 9);
-         System.arraycopy(posbuf, 9, newPosbuf, 10, posbuf.length - 9);
-         newPosbuf[9] = '0';
-         posbuf = newPosbuf;
-      }
+      // Short longitude - repair by adding missing '0'. This needs examining more closely. It still may be recoverable.
+      // if (posbuf[13] == '.') {
+      // char[] newPosbuf = new char[posbuf.length + 1];
+      // System.arraycopy(posbuf, 0, newPosbuf, 0, 9);
+      // System.arraycopy(posbuf, 9, newPosbuf, 10, posbuf.length - 9);
+      // newPosbuf[9] = '0';
+      // posbuf = newPosbuf;
+      // }
 
       // Longer longitude - repair by removing extra '0'. (likely from alternate symbols used/overlays)
       if (posbuf[15] == '.') {
@@ -693,11 +693,14 @@ public class PositionParser {
          minutes += minFactor * (c - '0');
          minFactor *= 0.1d;
       }
-      if (minutes >= 60.0d)
-         throw new ParseException("Bad minutes value - 60.0 or over", 0);
+
       // return result
       result += minutes / 60.0d;
       result = Math.round(result * 100000.0) * 0.00001d;
+
+      if (minutes >= 60.0d)
+         throw new ParseException("Bad minutes value - 60.0 or over: minutes=" + minutes + "   result=" + result, 0);
+
       if (degSize == 2 && result > 90.01d)
          throw new ParseException("Latitude value too high", 0);
       if (degSize == 3 && result > 180.01d)

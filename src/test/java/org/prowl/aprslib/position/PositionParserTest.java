@@ -65,6 +65,7 @@ public class PositionParserTest {
       // Uncompressed test packets as seen on ARPS-IS
       String[] testCases = new String[] {
             // ";G0VEA-B *082251z5037.41N/-0323.84ErDVRPTR V2 Exmouth",
+            // "/111111z6029.79N/0067.45E[inReachExplorer 12:49:00", // Short LON position. Not one off corruption LA3QMA
             ";145.687.5_111111z4633.53N/00023.19Er",
             ";SOMERSET CO RACES UHF SYSTEM*111111z4013.93N/07906.15Wr444.475-R 443.150-R PLs 123HZ",
             ";Windmill *111111z5121.33N\\900108.22EL Built in 1789, Grade 1 Listed - Open Sunday's Easter to Sept.", // alernate symbols
@@ -97,7 +98,7 @@ public class PositionParserTest {
             ";145.687.5_111111z4633.  N/00023.  Er",
             ";145.687.5_111111z463 .  N/0002 .  Er",
             ";145.687.5_111111z46  .  N/000  .  Er",
-            "!330 .  N/965 .  W_", // too short, but recoverable
+            // "!330 . N/965 . W_", // too short, but recoverable?
       };
 
       // Check that our list of NMEA test cases can be parsed ok
@@ -116,8 +117,8 @@ public class PositionParserTest {
             "!4126.95N/09629.10W", // missing symbol.
             // "!4553.97NPZ01556.88E#/W3, APRS 9A2CD Conjo Zagreb 1", // winaprs 'PZ' - needs investigation
             // "!3237.30N/11525.44@\"#W# Mexicali, Baja * XE2DAK-2 / UHF", // investigate this too - longitude sign is @ for some reason
-            "!3302.51N/9655.48W_", // too short. (not enough decimals 9655.48W is really 09655.48W)
-            ";444.900+*111111z2857.60N/9952.40WrT141", // Another short longitude
+            // "!3302.51N/9655.48W_", // too short. (not enough decimals 9655.48W is really 09655.48W)
+            // ";444.900+*111111z2857.60N/9952.40WrT141", // Another short longitude
             ";147.210VT*111111Z4403.55N/07215.46Wr147.210MHz T100 +060 R50m KB1FDA", // Time id 'Z' instead of 'z'
 
       };
