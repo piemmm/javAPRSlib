@@ -12,7 +12,19 @@ public class ParserTest {
    @Test
    public void parseWeatherUltimeter2000() throws Exception {
       APRSPacket packet = Parser.parse("X9XX-4>APRS,X6XXX-1,qAR,X6XXX-1:!!0000002202B3000027860334--------003D052300000000");
-      assertEquals("Parsed packet is not of type weather", packet.getType(), APRSTypes.WX);
+      assertEquals("Parsed packet is not of type weather", APRSTypes.WX, packet.getType());
+   }
+
+   @Test
+   public void parseMessage() throws Exception {
+      APRSPacket packet = Parser.parse("ANSRVR>APWW10,KJ4ERJ-15,TCPIP*,qAS,KJ4ERJ-15::EA1QV    :Now Monitoring ISS");
+      assertEquals("Parsed packet is not of type message", APRSTypes.MESSAGE, packet.getType());
+   }
+
+   @Test
+   public void parseTelemetry() throws Exception {
+      APRSPacket packet = Parser.parse("KG4OFO-9>APRX27,TCPIP*,qAC,T2CAWEST:T#504,0.0,0.0,0.0,0.0,0.0,00000000");
+      assertEquals("Parsed packet is not of type telemetry", APRSTypes.TELEMETRY, packet.getType());
    }
 
    @Test

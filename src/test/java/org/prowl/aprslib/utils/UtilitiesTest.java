@@ -4,6 +4,7 @@
 package org.prowl.aprslib.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
@@ -40,13 +41,15 @@ public class UtilitiesTest {
          Utilities.main(new String[0]);
          fail("Did not exit");
       } catch (ExitException e) {
-         // Success
+         assertTrue(out.toString().contains("Usage:"));
       }
+
+      out.reset();
       try {
          Utilities.main(new String[] { "F0OOO" });
          fail("Did not exit");
       } catch (ExitException e) {
-         // Success
+         assertEquals("Hash: 13725\n", out.toString());
       }
       System.setOut(sysOut);
    }

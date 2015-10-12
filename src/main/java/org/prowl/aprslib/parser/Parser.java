@@ -112,7 +112,7 @@ public class Parser {
          case '!':
          case '=':
          case '/':
-         case '@':
+         case '@': // position+weather?
          case '`':
          case '\'':
          case '$':
@@ -158,6 +158,7 @@ public class Parser {
             break;
          case 'T':
             if (bodyBytes.length > 18) {
+               type = APRSTypes.TELEMETRY;
                // System.out.println("Parsing TELEMETRY");
                // parseTelem(bodyBytes);
             } else {
