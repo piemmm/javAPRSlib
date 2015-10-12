@@ -6,6 +6,8 @@ package org.prowl.aprslib.utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.security.Permission;
 
 import org.junit.After;
@@ -17,6 +19,8 @@ import org.junit.Test;
  *
  */
 public class UtilitiesTest {
+
+   private static PrintStream sysOut = System.out;
 
    @Before
    public void setup() {
@@ -30,6 +34,8 @@ public class UtilitiesTest {
 
    @Test
    public void testMain() {
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(out));
       try {
          Utilities.main(new String[0]);
          fail("Did not exit");
@@ -42,7 +48,7 @@ public class UtilitiesTest {
       } catch (ExitException e) {
          // Success
       }
-
+      System.setOut(sysOut);
    }
 
    /**
