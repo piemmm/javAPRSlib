@@ -17,7 +17,7 @@ public class ObjectPacket extends InformationField implements Serializable {
    /**
     * parse an APRS object message
     *
-    * @return new ObjectPacket instance with the parsed data
+    * Creates an ObjectPacket instance with the parsed data
     */
    public ObjectPacket(byte[] msgBody) throws Exception {
       super(msgBody);

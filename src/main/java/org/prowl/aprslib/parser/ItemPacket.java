@@ -12,7 +12,10 @@ public class ItemPacket extends ObjectPacket implements Serializable {
    /**
     * parse an APRS item message
     *
-    * @return new ItemPacket instance with the parsed data
+    * new ItemPacket instance with the parsed data
+    * 
+    * @param msgBody
+    *           The message body
     */
    public ItemPacket(byte[] msgBody) throws Exception {
       this.rawBytes = msgBody;

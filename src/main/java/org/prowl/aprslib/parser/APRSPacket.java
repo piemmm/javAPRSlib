@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * This class represents a complete APRS AX.25 packet, as found in a TNC2-style string:
- * SOURCE>DESTIN,VIA,VIA:payload
+ * SOURCE&gt;DESTIN,VIA,VIA:payload
  *
  * @author johng
  */

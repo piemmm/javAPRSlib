@@ -47,6 +47,10 @@ public class Digipeater extends Callsign implements Serializable {
    /**
     * parse a comma-separated list of digipeaters
     *
+    * @param digilist
+    *           the list of digis
+    * @param includeFirst
+    *           includes the first call
     * @return the list of digipeaters as an array
     */
    public static ArrayList<Digipeater> parseList(String digiList, boolean includeFirst) {

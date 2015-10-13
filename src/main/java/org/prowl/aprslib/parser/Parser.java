@@ -32,7 +32,7 @@ import org.prowl.aprslib.position.PositionPacket;
 /**
  * This is the code parser for AX25 UI packets that are traditionally used in APRS networks, in TNC2
  * format. TNC2 format is defined as:
- * SOURCE>DESTIN,VIA,VIA:payload
+ * SOURCE&gt;DESTIN,VIA,VIA:payload
  * In APRS packets, the first character of the payload is the Data Type Identifier, which is the key for
  * further parsing of the message. This class parses raw TNC2 packets and returns instances of APRSPackets
  *
