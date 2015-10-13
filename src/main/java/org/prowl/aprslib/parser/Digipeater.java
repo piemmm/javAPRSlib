@@ -47,7 +47,7 @@ public class Digipeater extends Callsign implements Serializable {
    /**
     * parse a comma-separated list of digipeaters
     *
-    * @param digilist
+    * @param digiList
     *           the list of digis
     * @param includeFirst
     *           includes the first call
