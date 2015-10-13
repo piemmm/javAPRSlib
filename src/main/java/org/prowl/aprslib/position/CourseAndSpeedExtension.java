@@ -64,7 +64,7 @@ public class CourseAndSpeedExtension extends DataExtension implements Serializab
    }
 
    /**
-    * @returns the current speed in knots and course in degrees in a formatted string
+    * @return the current speed in knots and course in degrees in a formatted string
     */
    @Override
    public String toString() {
@@ -72,7 +72,7 @@ public class CourseAndSpeedExtension extends DataExtension implements Serializab
    }
 
    /**
-    * @returns the current speed in mph and course in degrees in a formatted string
+    * @return the current speed in mph and course in degrees in a formatted string
     */
    @Override
    public String toSAEString() {
