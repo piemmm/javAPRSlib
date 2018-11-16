@@ -1,4 +1,6 @@
-APRSlib [![Build Status](https://travis-ci.org/piemmm/APRSlib.svg?branch=master)](https://travis-ci.org/piemmm/APRSlib) [![codecov.io](http://codecov.io/github/piemmm/APRSlib/coverage.svg?branch=master)](http://codecov.io/github/piemmm/APRSlib?branch=master)
+APRSlib [![Build Status](https://travis-ci.org/piemmm/APRSlib.svg?branch=master)](https://travis-ci.org/piemmm/APRSlib) [![codecov](https://codecov.io/gh/piemmm/APRSlib/branch/master/graph/badge.svg)](https://codecov.io/gh/piemmm/APRSlib)
+
+
 ==========
 This is a fork of javAPRSLib at https://github.com/ab0oo/javAPRSlib
 
