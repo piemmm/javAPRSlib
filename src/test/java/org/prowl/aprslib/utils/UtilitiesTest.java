@@ -49,13 +49,14 @@ public class UtilitiesTest {
          Utilities.main(new String[] { "F0OOO" });
          fail("Did not exit");
       } catch (ExitException e) {
-         assertEquals("Hash: 13725\n", out.toString());
+         assertTrue(out.toString().contains("Hash: 13725"));
       }
       System.setOut(sysOut);
    }
 
    /**
-    * Test method for {@link org.prowl.aprslib.utils.Utilities#doHash(java.lang.String)}.
+    * Test method for
+    * {@link org.prowl.aprslib.utils.Utilities#doHash(java.lang.String)}.
     */
    @Test
    public void testDoHash() {
@@ -87,7 +88,8 @@ public class UtilitiesTest {
    }
 
    /**
-    * Test method for {@link org.prowl.aprslib.utils.Utilities#metersToMiles(double)}.
+    * Test method for
+    * {@link org.prowl.aprslib.utils.Utilities#metersToMiles(double)}.
     */
    @Test
    public void testMetersToMiles() {
@@ -95,7 +97,8 @@ public class UtilitiesTest {
    }
 
    /**
-    * Test method for {@link org.prowl.aprslib.utils.Utilities#metersToKilometers(double)}.
+    * Test method for
+    * {@link org.prowl.aprslib.utils.Utilities#metersToKilometers(double)}.
     */
    @Test
    public void testMetersToKilometers() {
