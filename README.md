@@ -1,5 +1,4 @@
-APRSlib  [![codecov](https://codecov.io/gh/piemmm/APRSlib/branch/master/graph/badge.svg)](https://codecov.io/gh/piemmm/APRSlib)
-
+APRSlib 
 
 ### This is a fork of javAPRSLib at https://github.com/ab0oo/javAPRSlib
 
