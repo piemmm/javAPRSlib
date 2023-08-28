@@ -21,7 +21,7 @@ public class TimeField extends APRSData {
      */
     public static TimeField parse(byte[] msgBody, int startPos) {
        msgBody = new String(msgBody).substring(startPos).getBytes();
-       System.out.println("msgBody: "+new String(msgBody));
+       //System.out.println("msgBody: "+new String(msgBody));
         TimeField tf = new TimeField();
         char dti=(char)msgBody[0];
         int cursor = startPos;
