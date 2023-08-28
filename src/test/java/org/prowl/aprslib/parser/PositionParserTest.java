@@ -143,6 +143,28 @@ public class PositionParserTest {
    }
 
    @Test
+   public void testMICe() throws Exception {
+      String testb = "MN7UMK-10>URPSVU:`vJdl \u001c#/`\"5?}MB6IMK  Gateway   433.6625 Fusion + WiresX  C4FM  DN Mode._$\n";
+      APRSPacket packet = Parser.parse(testb);
+
+      PositionField field = (PositionField) packet.getAprsInformation().getAprsData(APRSTypes.T_POSITION);
+
+      System.out.println(field);
+      assertTrue(field.getPosition().getLatitude() != 0);
+   }
+
+   @Test
+   public void testMICe2() throws Exception {
+      String testb = "G0TAI-9>URPTQZ:`vI\u001dl \u001cj/]\"4f}=\n";
+      APRSPacket packet = Parser.parse(testb);
+
+      PositionField field = (PositionField) packet.getAprsInformation().getAprsData(APRSTypes.T_POSITION);
+
+      System.out.println(field);
+      assertTrue(field.getPosition().getLatitude() != 0);
+   }
+
+   @Test
    public void testParseUncompressedCorruptRecoverablePacket() throws Exception {
       // Uncompressed test packets as seen on ARPS-IS
       String[] testCases = new String[] {
