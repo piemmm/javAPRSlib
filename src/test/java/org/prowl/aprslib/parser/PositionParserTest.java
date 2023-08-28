@@ -134,7 +134,7 @@ public class PositionParserTest {
 
       PositionField field = (PositionField) packet.getAprsInformation().getAprsData(APRSTypes.T_POSITION);
 
-      System.out.println(field);
+      //System.out.println(field);
     assertTrue(field.getPosition().getLatitude() != 0);
 
     //   String test = "`vJdl \u001c#/`\"4r}MB6IMK  Gateway   433.6625 Fusion + WiresX  C4FM  DN Mode._$";
@@ -149,7 +149,7 @@ public class PositionParserTest {
 
       PositionField field = (PositionField) packet.getAprsInformation().getAprsData(APRSTypes.T_POSITION);
 
-      System.out.println(field);
+     // System.out.println(field);
       assertTrue(field.getPosition().getLatitude() != 0);
    }
 
