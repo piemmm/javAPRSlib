@@ -19,9 +19,10 @@
  * USA
  */
 package org.prowl.aprslib.parser;
-
 /**
- * Abstract class that encapsulates the possible Data Extensions to APRS packets. These include
+ * 
+ * @author johng
+ * Abstract class that encapsulates the possible Data Extensions to APRS packets.  These include
  * Course and Speed
  * Power, Effective Antenna Heigh/Gain/Directivity
  * Pre-calculated Radio Range
@@ -30,9 +31,7 @@ package org.prowl.aprslib.parser;
  * Bearing and Number/Range/Quality
  * Area Objects
  * Wind Direction and Speed
- *
- * @author johng
  */
 public abstract class DataExtension {
-   public abstract String toSAEString();
+	public abstract String toSAEString();
 }

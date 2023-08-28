@@ -1,13 +1,10 @@
-package org.prowl.aprslib.position;
+package org.prowl.aprslib.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-import org.prowl.aprslib.parser.PHGExtension;
+import static org.junit.jupiter.api.Assertions.*;
+
+
 
 public class PositionParserTest {
 
@@ -33,32 +30,36 @@ public class PositionParserTest {
          Position position = PositionParser.parseNMEA(test.getBytes());
          assertNotEquals(0, position.getLatitude());
          assertNotEquals(0, position.getLongitude());
-         assertNotNull("Position should not be null", position);
+         assertNotNull( position,"Position should not be null");
       }
    }
 
-   /**
-    * Test an NMEA sentence without a GPS lock, but has positioning data.
-    *
-    * This should throw an exception as the data has a status of '0' (no lock) and has zero lon/lat
-    */
-   @Test
-   public void testInaccurateNMEASentence() throws Exception {
-      // NMEA test packets as seen on ARPS-IS
-      String[] testCases = new String[] {
-            "$GPGGA,000045.996,0000.0000,N,00000.0000,E,0,00,50.0,0.0,M,,,,0000*3C", // Invalid fix - no of sats also 0
-      };
 
-      // Check that our list of NMEA test cases can be parsed ok
-      for (String test : testCases) {
-         try {
-            PositionParser.parseNMEA(test.getBytes());
-            fail("Invalid GPS data was converted to a position object for NMEA data");
-         } catch (UnparsablePositionException e) {
-            // Test success
-         }
-      }
-   }
+   // (piemmm) This test is erroneous - it's not the parsers job to refuse to parse packets with quality set to 0
+   // - that's the wrong place to do it. Instead, you store the quality in the position object and let the
+    // caller decide what to do with it. Otherwise why did you bother with the hasFault flags?
+//   /**
+//    * Test an NMEA sentence without a GPS lock, but has positioning data.
+//    *
+//    * This should throw an exception as the data has a status of '0' (no lock) and has zero lon/lat
+//    */
+//   @Test
+//   public void testInaccurateNMEASentence() throws Exception {
+//      // NMEA test packets as seen on ARPS-IS
+//      String[] testCases = new String[] {
+//            "$GPGGA,000045.996,0000.0000,N,00000.0000,E,0,00,50.0,0.0,M,,,,0000*3C", // Invalid fix - no of sats also 0
+//      };
+//
+//      // Check that our list of NMEA test cases can be parsed ok
+//      for (String test : testCases) {
+//         try {
+//            PositionParser.parseNMEA(test.getBytes());
+//            fail("Invalid GPS data was converted to a position object for NMEA data");
+//         } catch (UnparsablePositionException e) {
+//            // Test success
+//         }
+//      }
+//   }
 
    @Test
    public void testParseUncompressedPacket() throws Exception {
@@ -83,7 +84,7 @@ public class PositionParserTest {
          Position position = PositionParser.parseUncompressed(test.getBytes());
          assertNotEquals(0, position.getLatitude());
          assertNotEquals(0, position.getLongitude());
-         assertNotNull("Position should not be null", position);
+         assertNotNull(position,"Position should not be null");
       }
    }
 
@@ -106,7 +107,7 @@ public class PositionParserTest {
          Position position = PositionParser.parseUncompressed(test.getBytes());
          assertNotEquals(0, position.getLatitude());
          assertNotEquals(0, position.getLongitude());
-         assertNotNull("Position should not be null", position);
+         assertNotNull( position, "Position should not be null");
       }
    }
 
@@ -128,7 +129,7 @@ public class PositionParserTest {
          Position position = PositionParser.parseUncompressed(test.getBytes());
          assertNotEquals(0, position.getLatitude());
          assertNotEquals(0, position.getLongitude());
-         assertNotNull("Position should not be null", position);
+         assertNotNull(position,"Position should not be null");
       }
    }
 
@@ -189,19 +190,19 @@ public class PositionParserTest {
       assertEquals(-1, p1.getAltitude());
       assertEquals(22.99483, p1.getLatitude(), 0.0000001);
       assertEquals(120.2055, p1.getLongitude(), 0.0000001);
-      assertEquals(Ambiguity.NONE, p1.getPositionAmbiguity());
+      assertEquals(PositionTest.Ambiguity.NONE, p1.getPositionAmbiguity());
 
       p1 = PositionParser.parseMICe("`&.@oU<>/]\"6J}=".getBytes(), "U9UY18");
       assertEquals(-1, p1.getAltitude());
       assertEquals(59.98633, p1.getLatitude(), 0.0000001);
       assertEquals(10.3060, p1.getLongitude(), 0.0000001);
-      assertEquals(Ambiguity.NONE, p1.getPositionAmbiguity());
+      assertEquals(PositionTest.Ambiguity.NONE, p1.getPositionAmbiguity());
 
       p1 = PositionParser.parseMICe("`0<Kl#>/\"4a}144.64Mhz-1W 3.97V 33.7C TF".getBytes(), "RTPTV7");
       assertEquals(-1, p1.getAltitude());
       assertEquals(24.07783, p1.getLatitude(), 0.0000001);
       assertEquals(120.54117, p1.getLongitude(), 0.0000001);
-      assertEquals(Ambiguity.NONE, p1.getPositionAmbiguity());
+      assertEquals(PositionTest.Ambiguity.NONE, p1.getPositionAmbiguity());
    }
 
    /**

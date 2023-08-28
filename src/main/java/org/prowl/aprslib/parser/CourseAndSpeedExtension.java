@@ -23,38 +23,52 @@ package org.prowl.aprslib.parser;
 import java.io.Serializable;
 
 /**
+ * 
  * @author johng
- *
+ * 
  */
-public class RangeExtension extends DataExtension implements Serializable {
+public class CourseAndSpeedExtension extends DataExtension implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private int range;
-	
-	public RangeExtension( int range ) {
-		this.setRange(range);
-	}
-
+	private int course;
+	private int speed;
 	/**
-	 * @param range the range to set
+	 * @return the course in degrees true
 	 */
-	public void setRange(int range) {
-		this.range = range;
+	public int getCourse() {
+		return course;
 	}
-
 	/**
-	 * @return the range
+	 * @param course the course to set in degrees true
 	 */
-	public int getRange() {
-		return range;
+	public void setCourse(int course) {
+		this.course = course;
+	}
+	/**
+	 * @return the speed in knots
+	 */
+	public int getSpeed() {
+		return speed;
+	}
+	/**
+	 * @param speed the speed to set in knots
+	 */
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 	
+	/**
+	 * @param Returns the current speed in knots and course in degrees in a formatted string
+	 */
+	@Override
+	public String toString() {
+		return "Moving "+speed+" kts @ "+course+" deg";
+	}
 	
-	/** 
-	 * @return String
+	/**
+	 * @param Returns the current speed in mph and course in degrees in a formatted string
 	 */
 	@Override
 	public String toSAEString() {
-		return "Range of "+range+" miles";
+		return "Moving "+Utilities.ktsToMph(speed)+" mph @ "+course+" deg";
 	}
-
 }

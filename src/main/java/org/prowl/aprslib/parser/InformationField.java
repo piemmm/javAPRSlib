@@ -21,95 +21,183 @@
 package org.prowl.aprslib.parser;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * This class represents the "payload" of a TNC2 style AX25 packet, stripped of the source call,
- * destination call, and digi VIAs. Note this class is abstract: only subclasses of it may be
- * instantiated. Per the APRS spec, these classes include Position, Direction Finding, Objects
- * and Items, Weather, Telemetry, Messages, Bulletins, Annoucements, Queries, Responses, Statuses,
- * and User-defined Others.
- *
+ * 
  * @author johng
+ *  This class represents the "payload" of a TNC2 style AX25 packet, stripped of the source call,
+ *  destination call, and digi VIAs.  Note this class is abstract:  only subclasses of it may be 
+ *  instantiated.  Per the APRS spec, these classes include Position, Direction Finding, Objects
+ *  and Items, Weather, Telemetry, Messages, Bulletins, Annoucements, Queries, Responses, Statuses,
+ *  and User-defined Others.
  */
-public abstract class InformationField implements Serializable {
-   private static final long serialVersionUID = 1L;
-   private char              dataTypeIdentifier;
-   protected byte[]          rawBytes;
-   protected APRSTypes       type;
-   protected boolean         hasFault         = false;
-   protected boolean         canMessage       = false;
-   protected DataExtension   extension        = null;
-   protected String          comment          = "";
+public class InformationField implements Serializable {
+	private static final long serialVersionUID = 1L;
+    private final long createTimestamp = System.currentTimeMillis();
+	private char dataTypeIdentifier;
+    protected byte[] rawBytes;
+	protected boolean hasFault = false;
+    protected boolean canMessage = false;
+    Map<APRSTypes,APRSData> dataFields;
+    DataExtension extension = null;
+	protected String comment = "";
 
-   public InformationField() {
-   }
+    public InformationField() {
+    }
+    
+    public InformationField( byte[] rawBytes ) {
+        if ( rawBytes.length < 1 ) {
+            System.err.println("Parse error:  zero length information field");
+        }
+        this.rawBytes = rawBytes;
+        this.dataTypeIdentifier = (char)rawBytes[0];
+        this.dataFields = new HashMap<>();
+        switch ( dataTypeIdentifier ) {
+       	case '@' :
+        	case '=' :
+        	case '\'':
+        	case ':' : this.canMessage = true;
+            default: this.canMessage = false;
+        }
+    }
+    
+    
+    /** 
+     * @return char
+     */
+    public char getDataTypeIdentifier() {
+        return dataTypeIdentifier;
+    }
 
-   public InformationField(byte[] rawBytes) {
-      if (rawBytes.length < 1) {
-         System.err.println("Parse error:  zero length information field");
-      }
-      this.rawBytes = rawBytes;
-      this.dataTypeIdentifier = (char) rawBytes[0];
-      switch (dataTypeIdentifier) {
-         case '@':
-         case '=':
-         case '\'':
-         case ':':
-            this.canMessage = true;
-      }
-   }
+    
+    /** 
+     * @param dti
+     */
+    public void setDataTypeIdentifier(char dti) {
+        this.dataTypeIdentifier = dti;
+    }
 
-   public void setExtension(DataExtension extension) {
-      this.extension = extension;
-   }
+    /**
+     * @return the rawBytes
+     */
+    public byte[] getRawBytes() {
+	    if (rawBytes != null)
+		    return rawBytes;
+	    else
+		    return toString().getBytes();
+    }
+    
+    
+    /** 
+     * @param start
+     * @param end
+     * @return byte[]
+     */
+    public byte[] getBytes(int start, int end) {
+        byte[] returnArray = new byte[end-start];
+        System.arraycopy(getRawBytes(), start, returnArray, 0, end-start);
+        return returnArray;
+    }
+    
+	/**
+	 * @return the comment string which was embedded in the packet
+	 */
+    public String getComment() {
+        return comment;
+    }
+    
+    
+    /** 
+     * @return String
+     */
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Raw Bytes:\t"+new String(rawBytes)+"\n");
+        sb.append("Data Type Identifier: "+dataTypeIdentifier+"\n");
+        sb.append("Create Timestamp:\t"+ (new java.util.Date(createTimestamp).toString() )+"\n");
+        sb.append("Comment:  "+this.comment+"\n");
+        for ( APRSData df : dataFields.values() ) {
+            sb.append("Class "+df.getClass().getName()+"\n");
+            sb.append(df.toString());
+        }
 
-   public char getDateTypeIdentifier() {
-      return dataTypeIdentifier;
-   }
+        return sb.toString();
+    }
+	/**
+	 * @return the hasFault
+	 */
+	public boolean hasFault() {
+        boolean faultFound = this.hasFault;
+        for ( APRSData data : dataFields.values() )  {
+            faultFound = faultFound | data.hasFault();
+        }
+		return faultFound;
+	}
 
-   public void setDataTypeIdentifier(char dti) {
-      this.dataTypeIdentifier = dti;
-   }
+	/**
+	 * @return the extension
+	 */
+	public final DataExtension getExtension() {
+		return extension;
+	}
 
-   /**
-    * @return the rawBytes
-    */
-   public byte[] getRawBytes() {
-      if (rawBytes != null)
-         return rawBytes;
-      else
-         return toString().getBytes();
-   }
+    
+    /** 
+     * @return long
+     */
+    public final long getCreateTimestamp() {
+        return this.createTimestamp;
+    }
 
-   public byte[] getBytes(int start, int end) {
-      byte[] returnArray = new byte[end - start];
-      System.arraycopy(getRawBytes(), start, returnArray, 0, end - start);
-      return returnArray;
-   }
+	
+    /** 
+     * @return Map<APRSTypes, APRSData>
+     */
+    public Map<APRSTypes,APRSData> getAprsData() {
+		return this.dataFields;
+	}
 
-   /**
-    * @return the comment string which was embedded in the packet
-    */
-   public String getComment() {
-      return comment;
-   }
+    
+    /** 
+     * @param t
+     * @return APRSData
+     */
+    public APRSData getAprsData(APRSTypes t) {
+        if ( dataFields.containsKey(t)) {
+            return dataFields.get(t);
+        }
+        return null;
+    }
 
-   @Override
-   public String toString() {
-      return new String(rawBytes);
-   }
+	
+    /** 
+     * @param type
+     * @param data
+     */
+    public void addAprsData(APRSTypes type, APRSData data) {
+		dataFields.put(type, data);
+	}
 
-   /**
-    * @return the hasFault
-    */
-   public boolean isHasFault() {
-      return hasFault;
-   }
+    
+    /** 
+     * @param t
+     * @return boolean
+     */
+    public boolean containsType(APRSTypes t) {
+        if ( dataFields.containsKey(t) ) return true;
+        return false;
+    }
 
-   /**
-    * @return the extension
-    */
-   public final DataExtension getExtension() {
-      return extension;
-   }
+    
+    /** 
+     * @return Set<APRSTypes>
+     */
+    public Set<APRSTypes> getTypes() {
+        return dataFields.keySet();
+    }
+
 }

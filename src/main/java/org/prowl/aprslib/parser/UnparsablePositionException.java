@@ -19,23 +19,19 @@
  * USA
  */
 /**
- * Simple exception class used to indicate a Parser failure
+ * Simple exception class used to indicate a Parser failure 
  */
-package org.prowl.aprslib.position;
+package org.prowl.aprslib.parser;
 
 /**
  * @author johng
+ *
  */
 public class UnparsablePositionException extends Exception {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   public UnparsablePositionException(String ex) {
-      super(ex);
-   }
-
-   public UnparsablePositionException(String message, Throwable cause) {
-      super(message, cause);
-   }
-
+	public UnparsablePositionException(String ex) {
+		super(ex);
+	}
 }
