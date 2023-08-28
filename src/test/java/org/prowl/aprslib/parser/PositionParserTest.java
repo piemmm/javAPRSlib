@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PositionParserTest {
 
+
+
+
    /**
     * Test for NMEA sentences with valid positions irrespective of accuracy
     *
@@ -22,6 +25,7 @@ public class PositionParserTest {
             "$GPGGA,201114.000,4455.5520,N,09323.0659,W,2,09,0.9,286.3,M,-31.7,M,3.8,0000*4B", // Valid DGPS type fix
             "$GPGGA,201120.000,4531.7420,N,12225.7631,W,2,10,0.9,60.5,M,-19.2,M,3.8,0000*73", // Valid DGPS again
             "$GPGGA,194733,3601.0626,N,09547.8473,W,,,,,M,,M,,*75" // GPS data sparse - no lock or sat data provided but still usable
+
 
       };
 
@@ -76,7 +80,16 @@ public class PositionParserTest {
             ";*111111z4338.31N/12319.64W R50m DRAIN",
             ";W9MKS   *111111z4111.40N/08858.87WE SRRC Mtg 7 PM 1M (2M if Hol) Leonore, IL w9mks.org",
             ";444.375NC*224620h3618.62N/07830.06Wrhttp://www.carolina440.net 444.375 Mhz PL 100 Hz",
-            ";W9MKS *111111z4111.40N/08858.87WE SRRC Mtg 7 PM 1M (2M if Hol) Leonore, IL w9mks.org"
+            ";W9MKS *111111z4111.40N/08858.87WE SRRC Mtg 7 PM 1M (2M if Hol) Leonore, IL w9mks.org",
+
+
+// are these corrupt?
+//        "@2105z91.23/.P00 Randy in Moraine APRSIS2 WIL#ek��@��@281053z3941.23N/08412.92W-PHG2030 Randy in Moraine APRSIS32 WINLINK",
+//       "!25595600.00SD54572500.00W&/A=000000440 MMDVM Voice 434.56000MHz +0.0000MHz, LU1ALG_Pi-Star_ND",
+//      "!441216.80ND12332.40E&RNG0001/A=000010 440 Voice 435.95000MHz +0.0000MHz",
+//      "=39.881N/32.68266E#73s de TA2BXX iGate and Digi",
+//       "!12118.00ND03124.00E&/A=000000440 MMDVM Voice 438.80000MHz +0.0000MHz, BH4CKK_Pi-Star"
+
       };
 
       // Check that our list of NMEA test cases can be parsed ok
@@ -109,6 +122,24 @@ public class PositionParserTest {
          assertNotEquals(0, position.getLongitude());
          assertNotNull( position, "Position should not be null");
       }
+   }
+
+   @Test
+   public void testCompressedPacket() throws Exception {
+     // String test = "'vVtl \u001cK\\]G0JMS  SONNING COMMON=";
+     // Position position = PositionParser.parseCompressed(test.getBytes(),0);
+//
+      String testb = "MN7UMK-10>APDW17:;G0TAI    *111111z/40iVN<gs-  !Ian, Great Linford, IO92PB";
+      APRSPacket packet = Parser.parse(testb);
+
+      PositionField field = (PositionField) packet.getAprsInformation().getAprsData(APRSTypes.T_POSITION);
+
+      System.out.println(field);
+    assertTrue(field.getPosition().getLatitude() != 0);
+
+    //   String test = "`vJdl \u001c#/`\"4r}MB6IMK  Gateway   433.6625 Fusion + WiresX  C4FM  DN Mode._$";
+    //  Position position = PositionParser.parseCompressed(test.getBytes(),0);
+
    }
 
    @Test

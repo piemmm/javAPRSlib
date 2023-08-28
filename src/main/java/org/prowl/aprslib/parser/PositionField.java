@@ -67,6 +67,7 @@ public class PositionField extends APRSData {
 				case '=':
 				case '/':
 				case '@':
+					// Location reporting
 					if (msgBody.length < 10) { // Too short!
 						this.hasFault = true;
 						this.comment += " Packet too short.";
@@ -106,6 +107,18 @@ public class PositionField extends APRSData {
 						}
 						break;
 					}
+				case ';':
+					// Compressed and uncompress object formats, eg: ";G0TAI    *111111z/40iVN<gs-  !Ian, Great Linford, IO92PB"  Where 111111z means permanent
+					this.type = APRSTypes.T_POSITION;
+					char posChar = (char) msgBody[cursor];
+					if (validSymTableCompressed(posChar)) { /* [\/\\A-Za-j] */
+						// compressed position packet
+						this.position = PositionParser.parseCompressed(msgBody, cursor);
+						//this.extension = PositionParser.parseCompressedExtension(msgBody, cursor);
+						this.positionSource = "Compressed";
+						cursor += 13;
+					}
+					break;
 				case '$':
 					if (msgBody.length > 10) {
 						this.type = APRSTypes.T_POSITION;

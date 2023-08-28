@@ -77,13 +77,12 @@ public class PositionParser {
                     break;
                 }
             }
+            // Sometimes have an extra / after a z timestamp
+            if (msgBody[cursor] == '/') {
+                cursor++;
+            }
         }
 
-        // This was 19, but is now 18 as some clients miss the leading 0 due to lack of following the spec.
-        // The position can still be recovered.
-        if (msgBody.length < cursor + 18) {
-            throw new UnparsablePositionException("Uncompressed packet too short:" + new String(msgBody));
-        }
 
         //Ambiguity positionAmbiguity = Ambiguity.NONE;
         int packetLength = 19;
@@ -185,6 +184,7 @@ public class PositionParser {
                 throw new UnparsablePositionException("Bad longitude sign character:" + lngh);
             return new Position(latitude, longitude, positionAmbiguity, symbolTable, symbolCode);
         } catch (Throwable e) {
+            e.printStackTrace();
             throw new UnparsablePositionException("Could not parse longitude/latitude data:" + new String(msgBody));
         }
     }
@@ -686,7 +686,7 @@ public class PositionParser {
         for (int i = 1; i < 9; ++i) {
             char c = (char) msgBody[cursor + i];
             if (c < 0x21 || c > 0x7b) {
-                throw new UnparsablePositionException("Compressed position characters out of range");
+                throw new UnparsablePositionException("Compressed position characters out of range: " + c);
             }
         }
 
@@ -746,7 +746,8 @@ public class PositionParser {
         for (int i = 0; i < degSize; ++i) {
             char c = txt[cursor + i];
             if (c < '0' || c > '9')
-                throw new Exception("Bad input decimals:  " + c);
+                throw new Exception("Bad input decimals:  " + c + " at position " + (cursor + i) + " in "
+                        + new String(txt));
             result = result * 10.0F + (c - '0');
         }
         double minFactor = 10.0F; // minutes factor, divide by 10.0F for every
@@ -760,10 +761,11 @@ public class PositionParser {
             if (decimalDot && i == 2) {
                 if (c == '.')
                     continue; // Skip it! (but only at this position)
-                throw new Exception("Expected decimal dot");
+                throw new Exception("Expected decimal dot:"+c+" at position "+(cursor + degSize + i)+" in "+new String(txt));
             }
             if (c < '0' || c > '9')
-                throw new Exception("Bad input decimals: " + c);
+                throw new Exception("Bad input decimals: " + c + " at position " + (cursor + degSize + i) + " in "
+                        + new String(txt));
             minutes += minFactor * (c - '0');
             minFactor *= 0.1D;
         }

@@ -20,6 +20,8 @@ public class TimeField extends APRSData {
      * @return TimeField
      */
     public static TimeField parse(byte[] msgBody, int startPos) {
+       msgBody = new String(msgBody).substring(startPos).getBytes();
+       System.out.println("msgBody: "+new String(msgBody));
         TimeField tf = new TimeField();
         char dti=(char)msgBody[0];
         int cursor = startPos;
@@ -30,7 +32,7 @@ public class TimeField extends APRSData {
             tf.hasFault = true;
             return tf;
         }
-        if (dti == '/' || dti == '@') {
+        if (dti == '/' || dti == '@'|| dti == '*') {
             /*
              * From the protocol spec, chapter 6, there are 3 different timestamp formats:
              * DHM: fixed 7 character, Day Hour Minute, either zulu or local 

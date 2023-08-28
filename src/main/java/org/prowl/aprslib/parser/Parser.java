@@ -198,6 +198,15 @@ public class Parser {
 					ObjectField of = new ObjectField(msgBody);
     				infoField.addAprsData(APRSTypes.T_OBJECT, of);
 					cursor = of.getLastCursorPosition();
+					System.out.println("1cursor:" +cursor);
+
+					// This could be valid time, or 111111z for permanent object type.
+					timeField = TimeField.parse(msgBody, cursor);
+					infoField.addAprsData(APRSTypes.T_TIMESTAMP, timeField);
+					cursor = timeField.getLastCursorPosition();
+					System.out.println("2cursor:" +cursor);
+
+					// Now we should be able to get the position field
 					PositionField posField = new PositionField(msgBody,dest, cursor +1 );
 					infoField.addAprsData(APRSTypes.T_POSITION, posField);
 					cursor = posField.getLastCursorPosition();
