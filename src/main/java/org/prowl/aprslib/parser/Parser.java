@@ -84,11 +84,11 @@ public class Parser {
 	 */
 	public static APRSPacket parse(final String packet) throws Exception {
         int cs = packet.indexOf('>');
-        String source = packet.substring(0,cs).toUpperCase();
+        String source = packet.substring(0,cs).toUpperCase().intern();
         int ms = packet.indexOf(':');
         String digiList = packet.substring(cs+1,ms);
         String[] digiTemp = digiList.split(",");
-        String dest = digiTemp[0].toUpperCase();
+        String dest = digiTemp[0].toUpperCase().intern();
         ArrayList<Digipeater> digis = Digipeater.parseList(digiList, false);
         String body = packet.substring(ms+1);
         APRSPacket ap = parseBody(source, dest, digis, body);
@@ -104,9 +104,9 @@ public class Parser {
 	 */
 	public static APRSPacket parseAX25(byte[] packet) throws Exception {
 	    int pos = 0;
-	    String dest = new Callsign(packet, pos).toString();
+	    String dest = new Callsign(packet, pos).toString().intern();
 	    pos += 7;
-	    String source = new Callsign(packet, pos).toString();
+	    String source = new Callsign(packet, pos).toString().intern();
 	    pos += 7;
 	    ArrayList<Digipeater> digis = new ArrayList<Digipeater>();
 	    while ((packet[pos - 1] & 1) == 0) {
